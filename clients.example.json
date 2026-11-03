@@ -1,0 +1,15 @@
+{
+  "_leia": "Copie para clients.json. NUNCA coloque senhas/tokens aqui (o programa recusa). Só cadastre com termo de autorização ASSINADO.",
+  "clients": [
+    {
+      "id": "padaria-exemplo",
+      "name": "Padaria Exemplo LTDA",
+      "authorization_ref": "TERMO-2026-001 (PDF assinado guardado em pasta segura)",
+      "authorized_by": "Fulano de Tal, sócio-administrador",
+      "contact": "contato@padaria-exemplo.com.br",
+      "valid_from": "2026-11-01",
+      "valid_until": "2026-11-30",
+      "scope": {"hosts": ["www.padaria-exemplo.com.br"], "paths": []}
+    }
+  ]
+}

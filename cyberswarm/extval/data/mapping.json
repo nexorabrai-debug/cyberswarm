@@ -1,0 +1,199 @@
+{
+ "_nota": "Mapeamento ESCRITO POR NÓS: qual achado do CyberSwarm corresponde a qual item da lista OFICIAL. Regra: só mapeia quando o achado é a própria vulnerabilidade descrita (não 'parecida'). Um achado pode cobrir mais de um item quando a lista oficial descreve o mesmo defeito com dois nomes (marcado 'duplo').",
+ "juice-shop": [
+  {
+   "item": "exposedMetricsChallenge",
+   "check": "web.metrics_exposed"
+  },
+  {
+   "item": "exposedMetricsChallenge",
+   "template": "prometheus-metrics"
+  },
+  {
+   "item": "directoryListingChallenge",
+   "check": "web.dirlisting",
+   "match": "/ftp"
+  },
+  {
+   "item": "errorHandlingChallenge",
+   "check": "web.error_stacktrace"
+  },
+  {
+   "item": "knownVulnerableComponentChallenge",
+   "check": "sca.vulnerable_dependency",
+   "match": "sanitize-html"
+  },
+  {
+   "item": "knownVulnerableComponentChallenge",
+   "check": "sca.vulnerable_dependency",
+   "match": "express-jwt"
+  },
+  {
+   "item": "knownVulnerableComponentChallenge",
+   "check": "sca.vulnerable_dependency",
+   "match": "jsonwebtoken"
+  }
+ ],
+ "webgoat": [
+  {
+   "item": "securitymisconfiguration",
+   "check": "web.error_stacktrace"
+  },
+  {
+   "item": "sqlinjection",
+   "check": "lab.webgoat.sqli"
+  },
+  {
+   "item": "insecurelogin",
+   "check": "lab.webgoat.insecure_login"
+  }
+ ],
+ "vampi": [
+  {
+   "item": "lack_of_resources_rate_limiting",
+   "check": "api.ratelimit.live"
+  },
+  {
+   "item": "excessive_data_exposure_through_debug_endpoint",
+   "check": "api.excessive_data",
+   "match": "_debug"
+  },
+  {
+   "item": "jwt_authentication_bypass_via_weak_signing_key",
+   "check": "api.jwt_weak_key"
+  },
+  {
+   "item": "broken_object_level_authorization",
+   "check": "api.bola"
+  }
+ ],
+ "dvga": [
+  {
+   "item": "graphql_introspection",
+   "check": "gql.introspection"
+  },
+  {
+   "item": "graphql_introspection",
+   "template": "graphql-introspection"
+  },
+  {
+   "item": "graphiql_interface",
+   "check": "gql.graphiql"
+  },
+  {
+   "item": "graphql_field_suggestions",
+   "check": "gql.suggestions"
+  },
+  {
+   "item": "graphql_field_suggestions",
+   "template": "graphql-field-suggestion"
+  },
+  {
+   "item": "stack_trace_errors",
+   "check": "gql.stacktrace"
+  },
+  {
+   "item": "stack_trace_errors",
+   "check": "web.error_stacktrace"
+  },
+  {
+   "item": "batch_query_attack",
+   "template": "graphql-array-batching"
+  },
+  {
+   "item": "aliases_based_attack",
+   "template": "graphql-alias-batching"
+  },
+  {
+   "item": "discovering_graphql",
+   "template": "graphql-detect"
+  },
+  {
+   "item": "fingerprinting_graphql",
+   "template": "graphql-detect"
+  },
+  {
+   "item": "batch_query_attack",
+   "check": "gql.batching"
+  }
+ ],
+ "insecurebankv2": [
+  {
+   "item": "flawed_broadcast_receivers",
+   "check": "apk.exported.receiver"
+  },
+  {
+   "item": "flawed_broadcast_receivers",
+   "check": "apk.receiver_sms"
+  },
+  {
+   "item": "vulnerable_activity_components",
+   "check": "apk.exported.activity"
+  },
+  {
+   "item": "insecure_content_provider_access",
+   "check": "apk.exported.provider"
+  },
+  {
+   "item": "insecure_webview_implementation",
+   "check": "apk.webview_js"
+  },
+  {
+   "item": "weak_cryptography_implementation",
+   "check": "apk.hardcoded_key"
+  },
+  {
+   "item": "hardcoded_secrets",
+   "check": "apk.hardcoded_key",
+   "duplo": true
+  },
+  {
+   "item": "local_encryption_issues",
+   "check": "apk.prefs_creds"
+  },
+  {
+   "item": "insecure_logging_mechanism",
+   "check": "apk.log_sensitive"
+  },
+  {
+   "item": "application_debuggable",
+   "check": "apk.debuggable"
+  },
+  {
+   "item": "android_backup_vulnerability",
+   "check": "apk.allowbackup"
+  },
+  {
+   "item": "insecure_sdcard_storage",
+   "check": "apk.external_storage"
+  },
+  {
+   "item": "insecure_http_connections",
+   "check": "apk.cleartext_http"
+  },
+  {
+   "item": "developer_backdoors",
+   "check": "apk.backdoor_string"
+  },
+  {
+   "item": "application_debuggable",
+   "mobsf": "apk.debuggable"
+  },
+  {
+   "item": "android_backup_vulnerability",
+   "mobsf": "apk.allowbackup"
+  },
+  {
+   "item": "vulnerable_activity_components",
+   "mobsf": "apk.exported.activity"
+  },
+  {
+   "item": "insecure_content_provider_access",
+   "mobsf": "apk.exported.provider"
+  },
+  {
+   "item": "flawed_broadcast_receivers",
+   "mobsf": "apk.exported.receiver"
+  }
+ ]
+}

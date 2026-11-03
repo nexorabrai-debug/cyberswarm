@@ -1,0 +1,37 @@
+{"_note": "Base OFFLINE e curada manualmente (amostra pequena). Não é um feed ao vivo. Mapeamentos CWE->ATT&CK são aproximações [não verificado oficialmente pelo MITRE].",
+ "cwe": {
+  "CWE-78": {"name": "OS Command Injection", "attack": ["T1059 Command and Scripting Interpreter"]},
+  "CWE-89": {"name": "SQL Injection", "attack": ["T1190 Exploit Public-Facing Application"]},
+  "CWE-95": {"name": "Eval Injection", "attack": ["T1059 Command and Scripting Interpreter"]},
+  "CWE-200": {"name": "Exposure of Sensitive Information", "attack": ["T1592 Gather Victim Host Information"]},
+  "CWE-284": {"name": "Improper Access Control", "attack": ["T1190 Exploit Public-Facing Application"]},
+  "CWE-295": {"name": "Improper Certificate Validation", "attack": ["T1557 Adversary-in-the-Middle"]},
+  "CWE-319": {"name": "Cleartext Transmission", "attack": ["T1040 Network Sniffing", "T1557 Adversary-in-the-Middle"]},
+  "CWE-327": {"name": "Broken or Risky Crypto Algorithm", "attack": ["T1557 Adversary-in-the-Middle"]},
+  "CWE-328": {"name": "Use of Weak Hash", "attack": ["T1110.002 Password Cracking"]},
+  "CWE-489": {"name": "Active Debug Code", "attack": ["T1592 Gather Victim Host Information"]},
+  "CWE-502": {"name": "Deserialization of Untrusted Data", "attack": ["T1190 Exploit Public-Facing Application"]},
+  "CWE-538": {"name": "File and Directory Information Exposure", "attack": ["T1552.001 Credentials In Files", "T1083 File and Directory Discovery"]},
+  "CWE-798": {"name": "Use of Hard-coded Credentials", "attack": ["T1552.001 Credentials In Files", "T1078 Valid Accounts"]},
+  "CWE-942": {"name": "Permissive CORS Policy", "attack": ["T1539 Steal Web Session Cookie"]},
+  "CWE-1004": {"name": "Sensitive Cookie Without HttpOnly", "attack": ["T1539 Steal Web Session Cookie"]},
+  "CWE-1021": {"name": "Improper Restriction of Rendered UI Layers", "attack": ["T1189 Drive-by Compromise"]},
+  "CWE-16": {"name": "Configuration", "attack": []},
+  "CWE-522": {"name": "Insufficiently Protected Credentials", "attack": ["T1552 Unsecured Credentials"]},
+  "CWE-532": {"name": "Sensitive Info in Log File", "attack": ["T1552 Unsecured Credentials"]}
+ },
+ "owasp_llm": {"OWASP-LLM01": "Prompt Injection", "OWASP-LLM02": "Insecure Output Handling", "OWASP-LLM06": "Sensitive Information Disclosure", "OWASP-LLM07": "System Prompt Leakage", "OWASP-LLM08": "Excessive Agency"},
+ "versions": [
+  {"product_regex": "Apache/2\\.4\\.49\\b", "cve": "CVE-2021-41773", "summary": "Path traversal em Apache 2.4.49"},
+  {"product_regex": "Apache/2\\.4\\.50\\b", "cve": "CVE-2021-42013", "summary": "Path traversal/RCE em Apache 2.4.50"},
+  {"product_regex": "OpenSSH_7\\.[0-6]\\b", "cve": "CVE-2018-15473", "summary": "Enumeração de usuários no OpenSSH < 7.7"},
+  {"product_regex": "nginx/1\\.(1[0-9]|[0-9])\\.\\d+\\b", "cve": "CVE-2021-23017", "summary": "Falha no resolver do nginx < 1.21.0 (verificar versão exata)"},
+  {"product_regex": "LabServer/1\\.0", "cve": "LAB-CVE-0001", "summary": "Entrada FICTÍCIA de laboratório para testar a correlação (não é CVE real)"}
+ ],
+ "chains": [
+  {"name": "Vazamento de credenciais por arquivo exposto", "requires": ["web.exposed.env|poc.env_exposure"], "narrative": "Arquivo .env público -> credenciais -> acesso a banco/API (T1552.001 -> T1078)."},
+  {"name": "Roubo de dados autenticados via CORS", "requires": ["web.cors.reflect_creds|poc.cors_creds", "web.cookie.httponly|web.cookie.samesite"], "narrative": "Origem arbitrária com credenciais + cookie fraco -> site malicioso lê dados da sessão."},
+  {"name": "Rebaixamento de criptografia", "requires": ["tls.old_protocol", "tls.hsts"], "narrative": "TLS antigo aceito e sem HSTS -> rebaixamento/interceptação (T1557)."},
+  {"name": "Agente de IA sequestrável", "requires": ["ai.prompt_injection", "ai.dangerous_tool"], "narrative": "Prompt injection + ferramenta shell -> execução de comandos pelo agente (LLM01 -> LLM08)."},
+  {"name": "Código com execução remota", "requires": ["codesec.eval|codesec.shell|codesec.pickle"], "narrative": "Entrada externa em eval/shell/pickle -> RCE (T1059)."}
+ ]}

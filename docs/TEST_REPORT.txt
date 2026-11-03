@@ -1,0 +1,5 @@
+CyberSwarm 2.0 — relatório de testes
+Quando: 2026-11-03 18:49 -03 (America/Sao_Paulo)
+Comando: python3 -m pytest -q
+Resultado: 162 passed, 1 skipped (acceptance #1b phone_required)
+Duração: ~108s

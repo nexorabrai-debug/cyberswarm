@@ -1,0 +1,10 @@
+# Depois de reservar a porta (ex. 12345) e com start.sh a correr:
+
+devil www add SEU_LOGIN.serv00.net proxy localhost 12345
+devil www options SEU_LOGIN.serv00.net sslonly on
+# Let's Encrypt: DevilWEB → WWW → Details → SSL / Generate certificate
+# NÃO marque "proxy HTTPS" se o Control escuta HTTP puro em 127.0.0.1.
+
+# Teste:
+curl -sI https://SEU_LOGIN.serv00.net/api/ping
+curl -s https://SEU_LOGIN.serv00.net/manifest.json

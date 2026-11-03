@@ -1,0 +1,80 @@
+{
+ "lab": "crapi",
+ "version": "git",
+ "source": "https://github.com/OWASP/crAPI/blob/develop/docs/challenges.md",
+ "items": [
+  {
+   "id": "challenge_1",
+   "name": "Access details of another user’s vehicle"
+  },
+  {
+   "id": "challenge_2",
+   "name": "Access mechanic reports of other users"
+  },
+  {
+   "id": "challenge_3",
+   "name": "Reset the password of a different user"
+  },
+  {
+   "id": "challenge_4",
+   "name": "Find an API endpoint that leaks sensitive information of other users"
+  },
+  {
+   "id": "challenge_5",
+   "name": "Find an API endpoint that leaks an internal property of a video"
+  },
+  {
+   "id": "challenge_6",
+   "name": "Perform a layer 7 DoS using ‘contact mechanic’ feature"
+  },
+  {
+   "id": "challenge_7",
+   "name": "Delete a video of another user"
+  },
+  {
+   "id": "challenge_8",
+   "name": "Get an item for free"
+  },
+  {
+   "id": "challenge_9",
+   "name": "Increase your balance by $1,000 or more"
+  },
+  {
+   "id": "challenge_10",
+   "name": "Update internal video properties"
+  },
+  {
+   "id": "challenge_11",
+   "name": "Make crAPI send an HTTP call to \"[www.google.com](www.google.com)\" and return the HTTP response."
+  },
+  {
+   "id": "challenge_12",
+   "name": "Find a way to get free coupons without knowing the coupon code."
+  },
+  {
+   "id": "challenge_13",
+   "name": "Find a way to redeem a coupon that you have already claimed by modifying the database"
+  },
+  {
+   "id": "challenge_14",
+   "name": "Find an endpoint that does not perform authentication checks for a user."
+  },
+  {
+   "id": "challenge_15",
+   "name": "Find a way to forge valid JWT Tokens"
+  },
+  {
+   "id": "challenge_16",
+   "name": "Use the chatbot to do a successfull prompt injection"
+  },
+  {
+   "id": "challenge_17",
+   "name": "Extract the credentials of another user using chatbot"
+  },
+  {
+   "id": "challenge_18",
+   "name": "Make the chatbot do an action on behalf of another user."
+  }
+ ],
+ "nota": "Não executado (exige Docker; ver VALIDACAO_EXTERNA.md)."
+}

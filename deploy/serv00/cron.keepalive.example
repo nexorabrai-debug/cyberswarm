@@ -1,0 +1,2 @@
+# Crontab (crontab -e) — sobe de novo se não houver processo cyberswarm:
+*/5 * * * * pgrep -f 'cyberswarm control serve' >/dev/null || /usr/home/LOGIN/cyberswarm/deploy/serv00/run-detached.sh

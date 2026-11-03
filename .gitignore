@@ -1,0 +1,7 @@
+reports/
+*.db
+__pycache__/
+.pytest_cache/
+clients.json
+build/
+*.egg-info/

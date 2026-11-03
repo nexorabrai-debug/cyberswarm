@@ -1,0 +1,593 @@
+{
+ "_doc": "Gabarito do laboratório: problemas PLANTADOS intencionalmente, listados a partir do desenho do lab (arquivos em labdata/ e cyberswarm/lab.py), um por um. 'match' = trecho que deve aparecer no título/evidência. Placeholders {http},{https} = URLs do lab na execução; {tcp_http},{tcp_https} = tcp://127.0.0.1:porta. Qualquer achado que não case com um item conta como falso positivo.",
+ "negatives": [
+  "labdata/ai/safe_prompt.txt (prompt delimitado)",
+  "app.py safe_examples (SQL parametrizado, subprocess em lista, safe_load, sha256)",
+  "settings.py placeholders",
+  "AndroidManifest MainActivity (launcher) e SafeReceiver",
+  "terraform variable ok_var ${var...}"
+ ],
+ "items": [
+  {
+   "module": "web",
+   "check_id": "web.header.csp",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.header.xfo",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.header.xcto",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.header.referrer",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.server_version",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.cookie.httponly",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.cookie.samesite",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.cors.reflect_creds",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.methods.trace",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.methods.risky",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.exposed.env",
+   "target": "http://127.0.0.1:{http}/.env",
+   "match": "",
+   "why": "lab.py FAKE['/.env']"
+  },
+  {
+   "module": "web",
+   "check_id": "web.exposed.git",
+   "target": "http://127.0.0.1:{http}/.git/HEAD",
+   "match": "",
+   "why": "lab.py FAKE['/.git/HEAD']"
+  },
+  {
+   "module": "web",
+   "check_id": "web.header.csp",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.header.xfo",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.header.xcto",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.header.referrer",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.server_version",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.cookie.httponly",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.cookie.samesite",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.cors.reflect_creds",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.methods.trace",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.methods.risky",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py: handler H sem cabeçalhos de segurança, cookie session fraco, CORS refletido, OPTIONS com TRACE/PUT/DELETE"
+  },
+  {
+   "module": "web",
+   "check_id": "web.exposed.env",
+   "target": "https://127.0.0.1:{https}/.env",
+   "match": "",
+   "why": "lab.py FAKE['/.env']"
+  },
+  {
+   "module": "web",
+   "check_id": "web.exposed.git",
+   "target": "https://127.0.0.1:{https}/.git/HEAD",
+   "match": "",
+   "why": "lab.py FAKE['/.git/HEAD']"
+  },
+  {
+   "module": "web",
+   "check_id": "web.no_https",
+   "target": "http://127.0.0.1:{http}",
+   "match": "",
+   "why": "lab HTTP sem redirecionamento"
+  },
+  {
+   "module": "web",
+   "check_id": "web.cookie.secure",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "cookie sem Secure servido em HTTPS"
+  },
+  {
+   "module": "tls",
+   "check_id": "tls.old_protocol",
+   "target": "https://127.0.0.1:{https}",
+   "match": "TLS 1.0",
+   "why": "lab.py start_https/lab_cert: TLS1.0 mínimo, autoassinado, CN lab.cyberswarm.invalid, 20 dias, sem HSTS"
+  },
+  {
+   "module": "tls",
+   "check_id": "tls.old_protocol",
+   "target": "https://127.0.0.1:{https}",
+   "match": "TLS 1.1",
+   "why": "lab.py start_https/lab_cert: TLS1.0 mínimo, autoassinado, CN lab.cyberswarm.invalid, 20 dias, sem HSTS"
+  },
+  {
+   "module": "tls",
+   "check_id": "tls.self_signed",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py start_https/lab_cert: TLS1.0 mínimo, autoassinado, CN lab.cyberswarm.invalid, 20 dias, sem HSTS"
+  },
+  {
+   "module": "tls",
+   "check_id": "tls.hostname_mismatch",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py start_https/lab_cert: TLS1.0 mínimo, autoassinado, CN lab.cyberswarm.invalid, 20 dias, sem HSTS"
+  },
+  {
+   "module": "tls",
+   "check_id": "tls.expiring",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py start_https/lab_cert: TLS1.0 mínimo, autoassinado, CN lab.cyberswarm.invalid, 20 dias, sem HSTS"
+  },
+  {
+   "module": "tls",
+   "check_id": "tls.hsts",
+   "target": "https://127.0.0.1:{https}",
+   "match": "",
+   "why": "lab.py start_https/lab_cert: TLS1.0 mínimo, autoassinado, CN lab.cyberswarm.invalid, 20 dias, sem HSTS"
+  },
+  {
+   "module": "api",
+   "check_id": "api.unauth.sensitive",
+   "target": "labdata/openapi.json",
+   "match": "DELETE /api/users",
+   "why": "openapi.json"
+  },
+  {
+   "module": "api",
+   "check_id": "api.unauth.sensitive",
+   "target": "labdata/openapi.json",
+   "match": "GET /api/users",
+   "why": "openapi.json"
+  },
+  {
+   "module": "api",
+   "check_id": "api.unauth.public",
+   "target": "labdata/openapi.json",
+   "match": "GET /api/health",
+   "why": "openapi.json"
+  },
+  {
+   "module": "api",
+   "check_id": "api.verbose_error.doc",
+   "target": "labdata/openapi.json",
+   "match": "/api/crash",
+   "why": "openapi.json"
+  },
+  {
+   "module": "api",
+   "check_id": "api.ratelimit.doc",
+   "target": "labdata/openapi.json",
+   "match": "DELETE /api/users",
+   "why": "openapi.json"
+  },
+  {
+   "module": "api",
+   "check_id": "api.ratelimit.doc",
+   "target": "labdata/openapi.json",
+   "match": "GET /api/users",
+   "why": "openapi.json"
+  },
+  {
+   "module": "api",
+   "check_id": "api.ratelimit.doc",
+   "target": "labdata/openapi.json",
+   "match": "GET /api/crash",
+   "why": "openapi.json"
+  },
+  {
+   "module": "api",
+   "check_id": "api.verbose_error.live",
+   "target": "http://127.0.0.1:{http}/api/crash",
+   "match": "",
+   "why": "lab.py /api/crash devolve traceback"
+  },
+  {
+   "module": "api",
+   "check_id": "api.ratelimit.live",
+   "target": "http://127.0.0.1:{http}/api/users",
+   "match": "",
+   "why": "/api/users sem X-RateLimit"
+  },
+  {
+   "module": "cloud",
+   "check_id": "secret.aws_key",
+   "target": "labdata/terraform/main.tf",
+   "match": "",
+   "why": "main.tf"
+  },
+  {
+   "module": "cloud",
+   "check_id": "secret.assignment",
+   "target": "labdata/terraform/main.tf",
+   "match": "fake",
+   "why": "main.tf"
+  },
+  {
+   "module": "cloud",
+   "check_id": "secret.assignment",
+   "target": "labdata/terraform/main.tf",
+   "match": "Supe",
+   "why": "main.tf"
+  },
+  {
+   "module": "cloud",
+   "check_id": "cloud.s3_public_acl",
+   "target": "labdata/terraform/main.tf",
+   "match": "",
+   "why": "main.tf"
+  },
+  {
+   "module": "cloud",
+   "check_id": "cloud.s3_block_disabled",
+   "target": "labdata/terraform/main.tf",
+   "match": "",
+   "why": "main.tf"
+  },
+  {
+   "module": "cloud",
+   "check_id": "cloud.sg_admin_open",
+   "target": "labdata/terraform/main.tf",
+   "match": "porta 22",
+   "why": "main.tf"
+  },
+  {
+   "module": "cloud",
+   "check_id": "cloud.sg_open",
+   "target": "labdata/terraform/main.tf",
+   "match": "porta 443",
+   "why": "main.tf"
+  },
+  {
+   "module": "mobile",
+   "check_id": "android.debuggable",
+   "target": "labdata/android/AndroidManifest.xml",
+   "match": "",
+   "why": "AndroidManifest.xml (MainActivity launcher e SafeReceiver NÃO são vulnerabilidade)"
+  },
+  {
+   "module": "mobile",
+   "check_id": "android.cleartext",
+   "target": "labdata/android/AndroidManifest.xml",
+   "match": "",
+   "why": "AndroidManifest.xml (MainActivity launcher e SafeReceiver NÃO são vulnerabilidade)"
+  },
+  {
+   "module": "mobile",
+   "check_id": "android.exported",
+   "target": "labdata/android/AndroidManifest.xml",
+   "match": "AdminActivity",
+   "why": "AndroidManifest.xml (MainActivity launcher e SafeReceiver NÃO são vulnerabilidade)"
+  },
+  {
+   "module": "mobile",
+   "check_id": "android.exported",
+   "target": "labdata/android/AndroidManifest.xml",
+   "match": "DataProvider",
+   "why": "AndroidManifest.xml (MainActivity launcher e SafeReceiver NÃO são vulnerabilidade)"
+  },
+  {
+   "module": "mobile",
+   "check_id": "android.exported",
+   "target": "labdata/android/AndroidManifest.xml",
+   "match": "SyncService",
+   "why": "AndroidManifest.xml (MainActivity launcher e SafeReceiver NÃO são vulnerabilidade)"
+  },
+  {
+   "module": "mobile",
+   "check_id": "android.allow_backup",
+   "target": "labdata/android/AndroidManifest.xml",
+   "match": "",
+   "why": "AndroidManifest.xml (MainActivity launcher e SafeReceiver NÃO são vulnerabilidade)"
+  },
+  {
+   "module": "ios",
+   "check_id": "ios.ats_disabled",
+   "target": "labdata/ios/Info.plist",
+   "match": "",
+   "why": "Info.plist"
+  },
+  {
+   "module": "ios",
+   "check_id": "ios.insecure_domain",
+   "target": "labdata/ios/Info.plist",
+   "match": "",
+   "why": "Info.plist"
+  },
+  {
+   "module": "ios",
+   "check_id": "ios.old_tls_domain",
+   "target": "labdata/ios/Info.plist",
+   "match": "",
+   "why": "Info.plist"
+  },
+  {
+   "module": "ios",
+   "check_id": "ios.file_sharing",
+   "target": "labdata/ios/Info.plist",
+   "match": "",
+   "why": "Info.plist"
+  },
+  {
+   "module": "ios",
+   "check_id": "ios.url_scheme",
+   "target": "labdata/ios/Info.plist",
+   "match": "",
+   "why": "Info.plist"
+  },
+  {
+   "module": "code",
+   "check_id": "secret.private_key",
+   "target": "labdata/src/deploy_key.pem",
+   "match": "",
+   "why": "chave falsa"
+  },
+  {
+   "module": "code",
+   "check_id": "secret.github_token",
+   "target": "labdata/src/settings.py",
+   "match": "",
+   "why": "settings.py (placeholders changeme/your_api_key_here/example/${} NÃO são segredo)"
+  },
+  {
+   "module": "code",
+   "check_id": "secret.slack_token",
+   "target": "labdata/src/settings.py",
+   "match": "",
+   "why": "settings.py (placeholders changeme/your_api_key_here/example/${} NÃO são segredo)"
+  },
+  {
+   "module": "code",
+   "check_id": "secret.google_api_key",
+   "target": "labdata/src/settings.py",
+   "match": "",
+   "why": "settings.py (placeholders changeme/your_api_key_here/example/${} NÃO são segredo)"
+  },
+  {
+   "module": "code",
+   "check_id": "secret.jwt",
+   "target": "labdata/src/settings.py",
+   "match": "",
+   "why": "settings.py (placeholders changeme/your_api_key_here/example/${} NÃO são segredo)"
+  },
+  {
+   "module": "code",
+   "check_id": "secret.high_entropy",
+   "target": "labdata/src/settings.py",
+   "match": "",
+   "why": "settings.py (placeholders changeme/your_api_key_here/example/${} NÃO são segredo)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.eval",
+   "target": "labdata/src/app.py",
+   "match": "linha 6",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.shell",
+   "target": "labdata/src/app.py",
+   "match": "linha 9",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.pickle",
+   "target": "labdata/src/app.py",
+   "match": "linha 12",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.yaml_load",
+   "target": "labdata/src/app.py",
+   "match": "linha 15",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.weak_hash",
+   "target": "labdata/src/app.py",
+   "match": "linha 18",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.tls_verify_off",
+   "target": "labdata/src/app.py",
+   "match": "linha 21",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.sql_concat",
+   "target": "labdata/src/app.py",
+   "match": "linha 24",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "codesec",
+   "check_id": "codesec.debug",
+   "target": "labdata/src/app.py",
+   "match": "linha 32",
+   "why": "app.py (safe_examples NÃO deve ser reportado)"
+  },
+  {
+   "module": "aisec",
+   "check_id": "ai.secret_in_prompt",
+   "target": "labdata/ai/support_bot_prompt.txt",
+   "match": "",
+   "why": "labdata/ai (safe_prompt.txt NÃO deve ser reportado)"
+  },
+  {
+   "module": "aisec",
+   "check_id": "ai.prompt_injection",
+   "target": "labdata/ai/support_bot_prompt.txt",
+   "match": "",
+   "why": "labdata/ai (safe_prompt.txt NÃO deve ser reportado)"
+  },
+  {
+   "module": "aisec",
+   "check_id": "ai.system_prompt_disclosure",
+   "target": "labdata/ai/support_bot_prompt.txt",
+   "match": "",
+   "why": "labdata/ai (safe_prompt.txt NÃO deve ser reportado)"
+  },
+  {
+   "module": "aisec",
+   "check_id": "ai.dangerous_tool",
+   "target": "labdata/ai/agent_config.json",
+   "match": "run_shell",
+   "why": "labdata/ai (safe_prompt.txt NÃO deve ser reportado)"
+  },
+  {
+   "module": "aisec",
+   "check_id": "ai.no_output_filter",
+   "target": "labdata/ai/agent_config.json",
+   "match": "",
+   "why": "labdata/ai (safe_prompt.txt NÃO deve ser reportado)"
+  },
+  {
+   "module": "network",
+   "check_id": "net.open.cleartext",
+   "target": "{tcp_http}",
+   "match": "",
+   "why": "porta do lab HTTP"
+  },
+  {
+   "module": "network",
+   "check_id": "net.open.tls",
+   "target": "{tcp_https}",
+   "match": "",
+   "why": "porta do lab HTTPS"
+  },
+  {
+   "module": "exploitlab",
+   "check_id": "poc.env_exposure",
+   "target": "http://127.0.0.1:{http}/.env",
+   "match": "",
+   "why": "PoC lab: reprodução 2x"
+  },
+  {
+   "module": "exploitlab",
+   "check_id": "poc.git_exposure",
+   "target": "http://127.0.0.1:{http}/.git/HEAD",
+   "match": "",
+   "why": "PoC lab: reprodução 2x"
+  },
+  {
+   "module": "exploitlab",
+   "check_id": "poc.cors_creds",
+   "target": "http://127.0.0.1:{http}/",
+   "match": "",
+   "why": "PoC lab: reprodução 2x"
+  }
+ ]
+}

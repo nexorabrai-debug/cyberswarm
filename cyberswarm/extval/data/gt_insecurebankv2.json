@@ -1,0 +1,108 @@
+{
+ "lab": "insecurebankv2",
+ "version": "3c8cc3a",
+ "source": "https://github.com/dineshshetty/Android-InsecureBankv2#readme",
+ "items": [
+  {
+   "id": "flawed_broadcast_receivers",
+   "name": "Flawed Broadcast Receivers"
+  },
+  {
+   "id": "intent_sniffing_and_injection",
+   "name": "Intent Sniffing and Injection"
+  },
+  {
+   "id": "weak_authorization_mechanism",
+   "name": "Weak Authorization mechanism"
+  },
+  {
+   "id": "local_encryption_issues",
+   "name": "Local Encryption issues"
+  },
+  {
+   "id": "vulnerable_activity_components",
+   "name": "Vulnerable Activity Components"
+  },
+  {
+   "id": "root_detection_and_bypass",
+   "name": "Root Detection and Bypass"
+  },
+  {
+   "id": "emulator_detection_and_bypass",
+   "name": "Emulator Detection and Bypass"
+  },
+  {
+   "id": "insecure_content_provider_access",
+   "name": "Insecure Content Provider access"
+  },
+  {
+   "id": "insecure_webview_implementation",
+   "name": "Insecure Webview implementation"
+  },
+  {
+   "id": "weak_cryptography_implementation",
+   "name": "Weak Cryptography implementation"
+  },
+  {
+   "id": "application_patching",
+   "name": "Application Patching"
+  },
+  {
+   "id": "sensitive_information_in_memory",
+   "name": "Sensitive Information in Memory"
+  },
+  {
+   "id": "insecure_logging_mechanism",
+   "name": "Insecure Logging mechanism"
+  },
+  {
+   "id": "android_pasteboard_vulnerability",
+   "name": "Android Pasteboard vulnerability"
+  },
+  {
+   "id": "application_debuggable",
+   "name": "Application Debuggable"
+  },
+  {
+   "id": "android_keyboard_cache_issues",
+   "name": "Android keyboard cache issues"
+  },
+  {
+   "id": "android_backup_vulnerability",
+   "name": "Android Backup vulnerability"
+  },
+  {
+   "id": "runtime_manipulation",
+   "name": "Runtime Manipulation"
+  },
+  {
+   "id": "insecure_sdcard_storage",
+   "name": "Insecure SDCard storage"
+  },
+  {
+   "id": "insecure_http_connections",
+   "name": "Insecure HTTP connections"
+  },
+  {
+   "id": "parameter_manipulation",
+   "name": "Parameter Manipulation"
+  },
+  {
+   "id": "hardcoded_secrets",
+   "name": "Hardcoded secrets"
+  },
+  {
+   "id": "username_enumeration_issue",
+   "name": "Username Enumeration issue"
+  },
+  {
+   "id": "developer_backdoors",
+   "name": "Developer Backdoors"
+  },
+  {
+   "id": "weak_change_password_implementation",
+   "name": "Weak change password implementation"
+  }
+ ],
+ "nota": "Só a lista 'currently included' (a lista 'working on' foi excluída, pois o próprio autor diz que ainda não está no app)."
+}

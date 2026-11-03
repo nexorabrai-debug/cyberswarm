@@ -1,0 +1,7 @@
+{"approvals": [
+  {"token": "APR-2026-0001-TROQUE-ESTE-VALOR", "op": "active_client_test", "target": "https://www.cliente-exemplo.com.br",
+   "client_id": "cliente-exemplo", "approved_by": "Nome do responsável (cliente) + Renato (CyberSwarm)", "expires": "2026-12-31",
+   "_nota": "Só vale junto com o registro do cliente em clients.json (escopo + termo de autorização assinado)."},
+  {"token": "APR-2026-0002-TROQUE-ESTE-VALOR", "op": "system_change", "target": "local:~/.cyberswarm-tools",
+   "approved_by": "Renato", "expires": "2026-12-31", "_nota": "Permite `cyberswarm hacker install-tools`."}
+]}

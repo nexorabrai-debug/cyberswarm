@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.lab.vuln">
+  <application android:debuggable="true" android:usesCleartextTraffic="true">
+    <activity android:name=".MainActivity" android:exported="true">
+      <intent-filter><action android:name="android.intent.action.MAIN"/></intent-filter>
+    </activity>
+    <activity android:name=".AdminActivity" android:exported="true"/>
+    <service android:name=".SyncService"><intent-filter><action android:name="com.lab.SYNC"/></intent-filter></service>
+    <provider android:name=".DataProvider" android:authorities="com.lab.data" android:exported="true"/>
+    <receiver android:name=".SafeReceiver" android:exported="false"/>
+  </application>
+</manifest>

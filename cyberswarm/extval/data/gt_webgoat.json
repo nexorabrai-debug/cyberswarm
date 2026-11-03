@@ -1,0 +1,108 @@
+{
+ "lab": "webgoat",
+ "version": "v2026.4",
+ "source": "https://github.com/WebGoat/WebGoat/tree/v2026.4/src/main/java/org/owasp/webgoat/lessons",
+ "items": [
+  {
+   "id": "authbypass",
+   "name": "authbypass"
+  },
+  {
+   "id": "bypassrestrictions",
+   "name": "bypassrestrictions"
+  },
+  {
+   "id": "challenges",
+   "name": "challenges"
+  },
+  {
+   "id": "clientsidefiltering",
+   "name": "clientsidefiltering"
+  },
+  {
+   "id": "cryptography",
+   "name": "cryptography"
+  },
+  {
+   "id": "csrf",
+   "name": "csrf"
+  },
+  {
+   "id": "deserialization",
+   "name": "deserialization"
+  },
+  {
+   "id": "hijacksession",
+   "name": "hijacksession"
+  },
+  {
+   "id": "htmltampering",
+   "name": "htmltampering"
+  },
+  {
+   "id": "idor",
+   "name": "idor"
+  },
+  {
+   "id": "insecurelogin",
+   "name": "insecurelogin"
+  },
+  {
+   "id": "jwt",
+   "name": "jwt"
+  },
+  {
+   "id": "logging",
+   "name": "logging"
+  },
+  {
+   "id": "missingac",
+   "name": "missingac"
+  },
+  {
+   "id": "openredirect",
+   "name": "openredirect"
+  },
+  {
+   "id": "passwordreset",
+   "name": "passwordreset"
+  },
+  {
+   "id": "pathtraversal",
+   "name": "pathtraversal"
+  },
+  {
+   "id": "securepasswords",
+   "name": "securepasswords"
+  },
+  {
+   "id": "securitymisconfiguration",
+   "name": "securitymisconfiguration"
+  },
+  {
+   "id": "spoofcookie",
+   "name": "spoofcookie"
+  },
+  {
+   "id": "sqlinjection",
+   "name": "sqlinjection"
+  },
+  {
+   "id": "ssrf",
+   "name": "ssrf"
+  },
+  {
+   "id": "vulnerablecomponents",
+   "name": "vulnerablecomponents"
+  },
+  {
+   "id": "xss",
+   "name": "xss"
+  },
+  {
+   "id": "xxe",
+   "name": "xxe"
+  }
+ ],
+ "nota": "Lições oficiais do jar. Removidas por NÓS (não são vulnerabilidades, são tutoriais): ['chromedevtools', 'cia', 'httpbasics', 'httpproxies', 'lessontemplate', 'webgoatintroduction', 'webwolfintroduction']"
+}

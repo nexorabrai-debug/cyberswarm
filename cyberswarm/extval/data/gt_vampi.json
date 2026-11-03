@@ -1,0 +1,43 @@
+{
+ "lab": "vampi",
+ "version": "f16052d",
+ "source": "https://github.com/erev0s/VAmPI#list-of-vulnerabilities",
+ "items": [
+  {
+   "id": "sqli_injection",
+   "name": "SQLi Injection"
+  },
+  {
+   "id": "unauthorized_password_change",
+   "name": "Unauthorized Password Change"
+  },
+  {
+   "id": "broken_object_level_authorization",
+   "name": "Broken Object Level Authorization"
+  },
+  {
+   "id": "mass_assignment",
+   "name": "Mass Assignment"
+  },
+  {
+   "id": "excessive_data_exposure_through_debug_endpoint",
+   "name": "Excessive Data Exposure through debug endpoint"
+  },
+  {
+   "id": "user_and_password_enumeration",
+   "name": "User and Password Enumeration"
+  },
+  {
+   "id": "regexdos_denial_of_service",
+   "name": "RegexDOS (Denial of Service)"
+  },
+  {
+   "id": "lack_of_resources_rate_limiting",
+   "name": "Lack of Resources & Rate Limiting"
+  },
+  {
+   "id": "jwt_authentication_bypass_via_weak_signing_key",
+   "name": "JWT authentication bypass via weak signing key"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+# [não testado neste box]
+services:
+  control:
+    build: .
+    ports: ["8770:8770"]
+    volumes: ["cs-data:/data"]
+    environment: [CONTROL_PASSWORD]
+  worker:
+    build: .
+    command: ["cyberswarm", "worker", "--data", "/data"]
+    volumes: ["cs-data:/data"]
+    depends_on: [control]
+volumes: {cs-data:}

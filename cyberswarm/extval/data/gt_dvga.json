@@ -1,0 +1,122 @@
+{
+ "lab": "dvga",
+ "version": "a961308",
+ "source": "https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application#scenarios",
+ "items": [
+  {
+   "id": "discovering_graphql",
+   "name": "Discovering GraphQL",
+   "category": "Reconnaissance"
+  },
+  {
+   "id": "fingerprinting_graphql",
+   "name": "Fingerprinting GraphQL",
+   "category": "Reconnaissance"
+  },
+  {
+   "id": "batch_query_attack",
+   "name": "Batch Query Attack",
+   "category": "Denial of Service"
+  },
+  {
+   "id": "deep_recursion_query_attack",
+   "name": "Deep Recursion Query Attack",
+   "category": "Denial of Service"
+  },
+  {
+   "id": "resource_intensive_query_attack",
+   "name": "Resource Intensive Query Attack",
+   "category": "Denial of Service"
+  },
+  {
+   "id": "field_duplication_attack",
+   "name": "Field Duplication Attack",
+   "category": "Denial of Service"
+  },
+  {
+   "id": "aliases_based_attack",
+   "name": "Aliases based Attack",
+   "category": "Denial of Service"
+  },
+  {
+   "id": "graphql_introspection",
+   "name": "GraphQL Introspection",
+   "category": "Information Disclosure"
+  },
+  {
+   "id": "graphiql_interface",
+   "name": "GraphiQL Interface",
+   "category": "Information Disclosure"
+  },
+  {
+   "id": "graphql_field_suggestions",
+   "name": "GraphQL Field Suggestions",
+   "category": "Information Disclosure"
+  },
+  {
+   "id": "server_side_request_forgery",
+   "name": "Server Side Request Forgery",
+   "category": "Information Disclosure"
+  },
+  {
+   "id": "stack_trace_errors",
+   "name": "Stack Trace Errors",
+   "category": "Information Disclosure"
+  },
+  {
+   "id": "os_command_injection_1",
+   "name": "OS Command Injection #1",
+   "category": "Code Execution"
+  },
+  {
+   "id": "os_command_injection_2",
+   "name": "OS Command Injection #2",
+   "category": "Code Execution"
+  },
+  {
+   "id": "stored_cross_site_scripting",
+   "name": "Stored Cross Site Scripting",
+   "category": "Injection"
+  },
+  {
+   "id": "log_spoofing_log_injection",
+   "name": "Log spoofing / Log Injection",
+   "category": "Injection"
+  },
+  {
+   "id": "html_injection",
+   "name": "HTML Injection",
+   "category": "Injection"
+  },
+  {
+   "id": "sql_injection",
+   "name": "SQL Injection",
+   "category": "Injection"
+  },
+  {
+   "id": "graphql_jwt_token_forge",
+   "name": "GraphQL JWT Token Forge",
+   "category": "Authorization Bypass"
+  },
+  {
+   "id": "graphql_interface_protection_bypass",
+   "name": "GraphQL Interface Protection Bypass",
+   "category": "Authorization Bypass"
+  },
+  {
+   "id": "graphql_query_deny_list_bypass",
+   "name": "GraphQL Query Deny List Bypass",
+   "category": "Authorization Bypass"
+  },
+  {
+   "id": "graphql_query_weak_password_protection",
+   "name": "GraphQL Query Weak Password Protection",
+   "category": "Miscellaneous"
+  },
+  {
+   "id": "arbitrary_file_write_path_traversal",
+   "name": "Arbitrary File Write // Path Traversal",
+   "category": "Miscellaneous"
+  }
+ ]
+}

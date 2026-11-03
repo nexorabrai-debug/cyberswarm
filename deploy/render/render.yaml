@@ -1,0 +1,23 @@
+# Blueprint Render — free web service, sem cartão no signup.
+# https://render.com/docs/free
+# [não testado neste box — requer conta GitHub do owner]
+services:
+  - type: web
+    name: cyberswarm-control
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/ping
+    envVars:
+      - key: CONTROL_DATA
+        value: /data
+      - key: CONTROL_SECURE_COOKIE
+        value: "1"
+      - key: CONTROL_ALLOW_LAN
+        value: "1"
+      - key: CONTROL_USER
+        sync: false
+      - key: CONTROL_PASSWORD
+        sync: false
+    disk: null   # free NÃO permite persistent disk

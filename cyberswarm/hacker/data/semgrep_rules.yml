@@ -1,0 +1,41 @@
+rules:
+  - id: codesec-eval
+    languages: [python]
+    severity: ERROR
+    message: eval/exec
+    pattern-either: [{pattern: eval(...)}, {pattern: exec(...)}]
+  - id: codesec-shell
+    languages: [python]
+    severity: ERROR
+    message: subprocess shell=True
+    pattern: subprocess.$F(..., shell=True, ...)
+  - id: codesec-pickle
+    languages: [python]
+    severity: ERROR
+    message: pickle
+    pattern-either: [{pattern: pickle.loads(...)}, {pattern: pickle.load(...)}]
+  - id: codesec-yaml_load
+    languages: [python]
+    severity: WARNING
+    message: yaml.load without Loader
+    patterns: [{pattern: yaml.load(...)}, {pattern-not: "yaml.load(..., Loader=$L, ...)"}]
+  - id: codesec-weak_hash
+    languages: [python]
+    severity: WARNING
+    message: weak hash
+    pattern-either: [{pattern: hashlib.md5(...)}, {pattern: hashlib.sha1(...)}]
+  - id: codesec-tls_verify_off
+    languages: [python]
+    severity: ERROR
+    message: verify=False
+    pattern: $F(..., verify=False, ...)
+  - id: codesec-sql_concat
+    languages: [python]
+    severity: ERROR
+    message: SQL string building
+    pattern-either: [{pattern: $DB.execute("..." % $X)}, {pattern: $DB.execute("..." + $X)}, {pattern: $DB.execute(f"...")}, {pattern: '$DB.execute("...".format(...))'}]
+  - id: codesec-debug
+    languages: [python]
+    severity: WARNING
+    message: DEBUG True
+    pattern: DEBUG = True

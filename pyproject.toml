@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cyberswarm"
+version = "1.0.0"
+description = "Auditoria de segurança DEFENSIVA multiagente (escopo controlado, só alvos autorizados)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = []
+
+[project.optional-dependencies]
+pdf = ["fpdf2>=2.7"]
+tls = ["cryptography>=41"]
+full = ["fpdf2>=2.7", "cryptography>=41"]
+tools = ["bandit", "semgrep", "sslyze", "checkov"]
+dev = ["pytest>=7", "fpdf2>=2.7", "cryptography>=41"]
+
+[project.scripts]
+cyberswarm = "cyberswarm.cli:main"
+
+[tool.setuptools]
+packages = ["cyberswarm", "cyberswarm.agents", "cyberswarm.hacker"]
+
+[tool.setuptools.package-data]
+cyberswarm = ["labdata/*", "labdata/*/*"]
+"cyberswarm.hacker" = ["data/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
