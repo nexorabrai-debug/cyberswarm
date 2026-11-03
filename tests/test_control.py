@@ -36,7 +36,7 @@ def test_every_api_route_requires_auth(srv):
         st, d, _ = c(meth, path, {} if meth != "GET" else None)
         if role == "public": assert path in ("/api/login", "/api/ping"); continue
         assert st == 401, (meth, path, st); checked += 1
-    assert checked == len(S.ROUTES) - 1 >= 24
+    assert checked == len(S.ROUTES) - 2 >= 24
 def test_session_cookie_flags_and_logout(srv):
     _, b, _ = srv; c = C(b); st, d, h = c.login()
     assert st == 200 and "HttpOnly" in h["Set-Cookie"] and "SameSite=Strict" in h["Set-Cookie"] and "csrf" in d and PW not in json.dumps(d)
