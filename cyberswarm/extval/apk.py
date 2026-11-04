@@ -34,7 +34,7 @@ class ApkAnalyzer(Agent):
         self.scope.check_path(apk); py = tools_python()
         if not py: raise RuntimeError("androguard indisponível (venv de ferramentas ausente)")
         sha = hashlib.sha256(open(apk, "rb").read()).hexdigest()
-        art = os.path.join(self.ctx.options.get("artifacts_dir", "/tmp/cyberswarm-apk"), sha[:12])
+        art = os.path.join(self.ctx.options.get("artifacts_dir", os.path.join(__import__("tempfile").gettempdir(), "cyberswarm-apk")), sha[:12])
         if not os.path.exists(os.path.join(art, "meta.json")):
             r = subprocess.run([py, DUMP, apk, art], capture_output=True, text=True, timeout=self.ctx.options.get("apk_timeout", 300))
             if r.returncode != 0: raise RuntimeError(f"androguard falhou: {r.stderr[-200:]}")
