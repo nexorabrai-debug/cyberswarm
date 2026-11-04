@@ -1,8 +1,32 @@
-# CyberSwarm 1.0 (com Hacker AI)
+# CyberSwarm 2.0 (com Hacker AI e Control)
 
-Ferramenta de **auditoria de segurança defensiva** com vários agentes trabalhando ao mesmo tempo. Ela gera relatório em PDF e HTML (dá pra ler no celular), separa o que está **confirmado** do que é **suspeita** e compara análises para ver o que foi corrigido.
+Ferramenta de **auditoria de segurança defensiva** com vários agentes trabalhando ao mesmo tempo. Gera relatório em PDF e HTML, separa o que está **confirmado** do que é **suspeita** e compara análises para ver o que foi corrigido.
 
 ⚠️ **Só use em sistemas seus ou com autorização por escrito do dono.** Testar sistemas dos outros sem permissão é crime no Brasil (Lei 12.737/2012). O programa **bloqueia** qualquer alvo fora do laboratório que não esteja cadastrado em `clients.json` com uma autorização válida.
+
+## O que tem na versão 2.0
+- **Control (painel no celular, PWA):** login com senha, chat que cria tarefas de verdade, botões **pausar, cancelar e retomar**, lista de achados e relatórios. Pode ser "instalado" na tela inicial pelo Chrome.
+- **Fila persistente com checkpoints:** se o servidor cair, a tarefa continua de onde parou ao ligar de novo.
+- **Hacker AI:** planeja quais módulos rodar a partir de um objetivo em português e verifica os achados.
+- **Benchmarks em laboratórios próprios** (números medidos, não são cobertura completa): VAmPI 8/9, DVGA 8/23, Juice Shop 5/116, InsecureBankv2 13/25, WebGoat 3/25 (não remedido). Detalhes em `docs/BENCHMARKS_2.0.md`.
+- **Segurança do painel:** sem terminal nem execução de comandos pela interface; nenhuma senha ou chave no frontend; por padrão escuta só em `127.0.0.1`.
+
+## Como usar no Android (Galaxy A32) — modo Termux
+É o modo recomendado agora: grátis, sem cartão, sem link que vence. Roda **só no próprio celular** (`http://127.0.0.1:8770`).
+Passo a passo, comando de instalação com versão fixa, backup/restauração, consumo e relatório de testes: **`docs/A32_TERMUX.md`**.
+
+> **Ainda não foi testado num Galaxy A32 de verdade.** Foi testado num Termux ARM64 emulado (veja o relatório em `docs/A32_TERMUX.md`). O que depende do teste no celular está listado lá.
+
+## Hospedagem na internet (situação atual)
+- **Back4App (grátis):** funcionou, mas o link grátis vence cerca de 1 hora depois de cada publicação e os dados são apagados a cada reinício. **Não serve para uso diário.** O plano pago (US$ 5/mês) não foi contratado.
+- **Render (grátis):** pede cartão com verificação de US$ 1; o cartão foi recusado. Não está no ar.
+- **Hugging Face:** rodar o programa exige plano pago. Não está no ar.
+- Hoje **não existe um link público funcionando**. Use o modo Termux.
+
+## Limites (verdade)
+- Checagens automáticas e passivas; **não substituem um pentest manual**. Os benchmarks acima mostram que muita coisa ainda não é detectada.
+- No Termux, ferramentas externas (nmap, nuclei, semgrep, trivy, sslyze...) não vêm instaladas: os módulos que dependem delas são pulados.
+- No Termux só funciona com o app aberto e só no próprio celular.
 
 ## 1. Instalar
 
@@ -76,14 +100,7 @@ Limites de segurança: o padrão é no máximo 5 requisições por segundo, 300 
 Trilha de auditoria: todas as operações vão para `reports/audit.log`, encadeadas por hash. Para conferir se ninguém mexeu: `cyberswarm audit-verify`.
 
 ## 6. Usar pelo celular (Android, Termux)
-1. Instale o **Termux** pelo F-Droid.
-2. No Termux: `pkg install python unzip` (opcional, para o PDF e o TLS: `pip install fpdf2 cryptography`; em alguns aparelhos o `cryptography` precisa de `pkg install rust` ou de `pkg install python-cryptography`).
-3. `termux-setup-storage` e copie o `cyberswarm.zip` para a pasta Downloads.
-4. `cd ~/storage/downloads && unzip cyberswarm.zip && cd cyberswarm && pip install .`
-5. `cyberswarm demo-comercial`
-6. Abra o PDF: `termux-open reports/*.pdf` (ou copie para Downloads: `cp reports/*.pdf ~/storage/downloads/`).
-
-*O Termux não foi testado num celular de verdade nesta versão. O print de celular só sai se tiver Chrome ou Playwright; no Termux, o PDF e o HTML funcionam sem eles.*
+Veja **`docs/A32_TERMUX.md`** (instalador com versão fixa, backup, consumo e relatório de testes).
 
 **Sem fpdf2:** o programa tenta gerar o PDF com o Chrome em modo headless. Se não houver nenhum dos dois, ele avisa "PDF não gerado" e você abre o HTML no navegador e usa "Imprimir → Salvar como PDF".
 
