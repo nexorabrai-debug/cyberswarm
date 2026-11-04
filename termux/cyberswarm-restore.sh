@@ -5,7 +5,7 @@ set -euo pipefail
 F="${1:?Informe o arquivo .tar.gz do backup}"
 DATA="${CONTROL_DATA:-$HOME/cyberswarm-data}"; ENVF="$HOME/.cyberswarm_env"
 [ -f "$F" ] || { echo "Arquivo não encontrado: $F"; exit 1; }
-if pgrep -f "cyberswarm control serve" >/dev/null 2>&1; then echo "Desligue o CyberSwarm primeiro (Ctrl+C)."; exit 1; fi
+if pgrep -f "cyberswarm control serve .*--port 8770" >/dev/null 2>&1; then echo "Desligue o CyberSwarm primeiro (Ctrl+C)."; exit 1; fi
 STG=$(mktemp -d "${TMPDIR:-$PREFIX/tmp}/csrs.XXXXXX"); trap 'rm -rf "$STG"' EXIT
 tar -xzf "$F" -C "$STG"
 [ -d "$STG/data" ] || { echo "Backup inválido (sem pasta data)."; exit 1; }
