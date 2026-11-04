@@ -13,6 +13,7 @@ Ferramenta de **auditoria de segurança defensiva** com vários agentes trabalha
 
 ## Como usar no Android (Galaxy A32) — modo Termux
 É o modo recomendado agora: grátis, sem cartão, sem link que vence. Roda **só no próprio celular** (`http://127.0.0.1:8770`).
+Versão liberada: tag `v2.0.0`, commit `02c6cdfdbe8f7440703a5265e4aacc417dacee35`.
 Passo a passo, comando de instalação com versão fixa, backup/restauração, consumo e relatório de testes: **`docs/A32_TERMUX.md`**.
 
 > **Ainda não foi testado num Galaxy A32 de verdade.** Foi testado num Termux ARM64 emulado (veja o relatório em `docs/A32_TERMUX.md`). O que depende do teste no celular está listado lá.
