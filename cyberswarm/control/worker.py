@@ -1,6 +1,7 @@
 """Fila assíncrona do Control. Reaproveita HackerAI + validação externa.
 Modos: threads embutidas (padrão) OU daemon externo (`cyberswarm worker`) quando autostart=False / --no-workers.
 Checkpoint: jobs 'executando' voltam a 'na_fila' na retomada (attempts++). Dedupe, pause, cancel, limites."""
+from ..v2.queue import Stopped
 import datetime, json, os, queue, re, secrets, socket, threading, time, traceback
 from urllib.parse import urlparse
 from ..scope import client_scope, is_lab, OutOfScope
@@ -169,6 +170,9 @@ class Worker:
         out = job_dir(self.data, j["client_id"], jid); tg = json.loads(j["targets"]); os.makedirs(out, exist_ok=True)
         # marca progresso
         def prog(msg): s.x("UPDATE jobs SET progress=? WHERE id=?", (msg[:500], jid))
+        def stop_check():
+            r = s.q("SELECT paused, cancelled FROM jobs WHERE id=?", (jid,), one=True) or {}
+            return "cancelada" if r.get("cancelled") else ("pausada" if r.get("paused") else None)
         try:
             if j.get("cancelled"): raise RuntimeError("cancelada")
             if j["kind"] == "extval":
@@ -192,14 +196,19 @@ class Worker:
                 h = HackerAI(out, approvals_path=os.path.join(out, "approvals.json"))
                 prog("executando módulos…")
                 r = h.run(j["goal"], targets, scope=scope, client=cid, token=j["approval_token"], meta=meta,
-                          persist_queue=qpath)
+                          persist_queue=qpath, should_stop=stop_check)
                 summ = {k: r[k] for k in ("hacker_run", "core_run", "goal", "modules", "skipped", "denied", "findings", "confirmed", "elapsed_s", "metrics", "new", "recurring", "tools") if k in r}
                 if r.get("plan"): s.x("UPDATE jobs SET plan_json=? WHERE id=?", (json.dumps({"modules": r["plan"]["modules"], "skipped": r["plan"]["skipped"], "goal": r["plan"]["goal"]}, ensure_ascii=False), jid))
             if s.q("SELECT cancelled FROM jobs WHERE id=?", (jid,), one=True).get("cancelled"):
                 s.x("UPDATE jobs SET status='cancelada', finished=? WHERE id=?", (time.time(), jid)); return
-            s.x("UPDATE jobs SET status='concluida', finished=?, summary=?, progress=? WHERE id=?",
+            n = s.x("UPDATE jobs SET status='concluida', finished=?, summary=?, progress=? WHERE id=? AND COALESCE(paused,0)=0 AND COALESCE(cancelled,0)=0",
                 (time.time(), json.dumps(summ, default=str, ensure_ascii=False), "concluída", jid))
+            if stop_check(): self.audit.log("job_stopped_at_end", job=jid); return
             self.audit.log("job_done", job=jid)
+        except Stopped as e:
+            if str(e) == "cancelada": s.x("UPDATE jobs SET status='cancelada', finished=COALESCE(finished,?) WHERE id=?", (time.time(), jid))
+            else: s.x("UPDATE jobs SET status='pausada', progress=? WHERE id=? AND COALESCE(cancelled,0)=0", ("pausada no checkpoint", jid))
+            self.audit.log("job_checkpoint_stop", job=jid, reason=str(e))
         except Exception as e:
             s.x("UPDATE jobs SET status='erro', finished=?, error=?, progress=? WHERE id=?", (time.time(), repr(e)[:500], "erro", jid))
             self.audit.log("job_error", job=jid, error=repr(e)[:200]); traceback.print_exc()

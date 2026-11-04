@@ -35,7 +35,7 @@ class HackerAI:
         self.log = get_logger("hacker")
     def _ctx(self, scope, options):
         return Ctx(scope, self.log, Net(scope, self.audit, rate_per_sec=self.rate, timeout=self.timeout, max_requests=self.max_requests), self.audit, options)
-    def run(self, goal, targets, scope=None, client=None, token=None, ports=None, pdf=True, meta=None, force_tools=None, persist_queue=None):
+    def run(self, goal, targets, scope=None, client=None, token=None, ports=None, pdf=True, meta=None, force_tools=None, persist_queue=None, should_stop=None):
         t0 = time.monotonic(); scope = scope or Scope.lab(); lab = scope.client is None and all(urlparse(v).hostname in LAB_HOSTS for v in targets.values() if v and "://" in v)
         hrun = self.memory.start_run(goal if isinstance(goal, str) else json.dumps(goal)); bus = Bus(hrun, self.memory)
         P = make_plan(goal, targets, lab=lab); bus.publish("plan", "planner", {"modules": P["modules"], "tasks": len(P["tasks"]), "skipped": P["skipped"], "levels": P["levels"]})
@@ -72,7 +72,10 @@ class HackerAI:
             from ..v2.cache import ResultCache
             pq = PersistentQueue(persist_queue); cache = ResultCache(persist_queue + ".cache")
             if pq.recovered: self.audit.log("v2_resume", run=hrun, recovered=pq.recovered)
-        for level in P["levels"]:
+        for li, level in enumerate(P["levels"]):
+            if should_stop and (why := should_stop()):
+                from ..v2.queue import Stopped
+                raise Stopped(why)
             jobs = []
             for tid in level:
                 t = byid.get(tid)
@@ -85,9 +88,9 @@ class HackerAI:
                 bus.publish("task", "planner", {"task": tid, "agent": t["agent"], "target": t["target"]}, recipient=t["agent"]); jobs.append((t["agent"], t["target"]))
             if not jobs: continue
             if persist_queue:
-                job_id = f"{hrun}-L{len(raw)}-{len(jobs)}"
+                job_id = f"L{li}-" + ",".join(sorted(a for a, _ in jobs))  # estável entre retomadas
                 pq.add(job_id, jobs)
-                run_job(pq, job_id, ctx, cache=cache, task_timeout=self.task_timeout, retries=self.retries, on_task=on_task, core_db=core, run_id=rid)
+                run_job(pq, job_id, ctx, cache=cache, task_timeout=self.task_timeout, retries=self.retries, on_task=on_task, core_db=core, run_id=rid, should_stop=should_stop)
                 raw += pq.findings(job_id)
             else:
                 raw += asyncio.run(orch.run(jobs, "hacker", client, rid=rid, finalize=False))[1]

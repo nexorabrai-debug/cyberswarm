@@ -7,7 +7,7 @@ from ..net import http_proof
 API_DOCS = ["/openapi.json", "/swagger.json", "/api-docs/swagger.json", "/v3/api-docs", "/api/swagger.json"]
 GQL_PATHS = ["/graphql", "/api/graphql", "/v1/graphql"]
 SENSITIVE_KEYS = re.compile(r'"(password|passwd|password_hash|pwd|secret|api_key|apikey|private_key|totpsecret)"\s*:\s*"[^"]{3,}"', re.I)
-TRACE = re.compile(rb"Traceback \(most recent call last\)|\n\s+at [\w$.<>]+ \(|java\.lang\.\w+Exception|at [\w.]+\([\w]+\.java:\d+\)")
+TRACE = re.compile(rb"Traceback \(most recent call last\)|\n\s+at [\w$.<>]+ \(|java\.lang\.\w+Exception|at [\w.]+\([\w]+\.java:\d+\)|id=[\"\']stacktrace[\"\']|>\s*at\s+/[\w./-]+|<li>[^<]*\bat\b")
 def _u(base, path): return urljoin(base.rstrip("/") + "/", path.lstrip("/"))
 class _Base(Agent):
     async def run(self, target): return await asyncio.to_thread(self._run, target)
@@ -39,6 +39,24 @@ class Discovery(_Base):
             url = _u(t, p); s, hh, b = self.net.request(url, read=16384)
             if s >= 400 and TRACE.search(b):
                 out.append(self.hit("web.error_stacktrace", url, f"HTTP {s} com stack trace no corpo", s, hh, b, p)); break
+        # logs e docs convencionais (GET) — só confirma conteúdo característico
+        for p in ("/support/logs/", "/logs/", "/log/"):
+            url = _u(t, p); s, hh, b = self.net.request(url, read=8192)
+            if s != 200: continue
+            text = b.decode("utf-8", "replace")
+            name = None
+            for part in text.replace("'", '"').split('href="')[1:]:
+                href = part.split('"', 1)[0]
+                if "access.log" in href or href.endswith(".log"):
+                    name = href; break
+            if not name: continue
+            lurl = _u(url, name); ls, lh, lb = self.net.request(lurl, read=4096)
+            if ls == 200 and (b"HTTP/" in lb or re.search(rb"\d+\.\d+\.\d+\.\d+", lb)):
+                out.append(self.hit("web.access_log", lurl, f"HTTP 200 em log de acesso ({p})", ls, lh, lb[:200], p)); break
+        for p in ("/ftp/acquisitions.md", "/ftp/legal.md"):
+            url = _u(t, p); s, hh, b = self.net.request(url, read=4096)
+            if s == 200 and b != base and (b.startswith(b"#") or b"confidential" in b.lower() or len(b) > 40):
+                out.append(self.hit("web.confidential_doc", url, f"HTTP 200 em documento em /ftp ({p})", s, hh, b[:200], p)); break
         return out
 @register
 class GraphQLProbe(_Base):

@@ -45,9 +45,14 @@ class PersistentQueue:
         out = []
         for (f,) in self.c.execute("SELECT findings FROM q WHERE job=? AND findings IS NOT NULL ORDER BY id", (job,)): out += json.loads(f)
         return out
-def run_job(q, job, ctx, cache=None, task_timeout=120, retries=0, on_task=None, core_db=None, run_id=None):
+class Stopped(Exception):
+    """Pausa/cancelamento pedido; o estado já está no checkpoint."""
+def run_job(q, job, ctx, cache=None, task_timeout=120, retries=0, on_task=None, core_db=None, run_id=None, should_stop=None):
     """Consome a fila até esvaziar. Pode ser morto a qualquer momento; nova chamada retoma do último checkpoint."""
-    while (t := q.claim(job)):
+    while True:
+        if should_stop and (why := should_stop()): raise Stopped(why)
+        t = q.claim(job)
+        if not t: break
         tid, agent, target = t
         hit = cache.get(agent, target) if cache else None
         if hit is not None:

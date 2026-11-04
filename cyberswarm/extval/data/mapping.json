@@ -32,6 +32,23 @@
    "item": "knownVulnerableComponentChallenge",
    "check": "sca.vulnerable_dependency",
    "match": "jsonwebtoken"
+  },
+  {
+   "item": "accessLogDisclosureChallenge",
+   "check": "web.access_log"
+  },
+  {
+   "item": "passwordHashLeakChallenge",
+   "check": "api.jwt_password_hash"
+  },
+  {
+   "item": "scoreBoardChallenge",
+   "check": "web.score_board"
+  },
+  {
+   "item": "directoryListingChallenge",
+   "check": "web.confidential_doc",
+   "match": "/ftp"
   }
  ],
  "webgoat": [
@@ -65,6 +82,22 @@
   {
    "item": "broken_object_level_authorization",
    "check": "api.bola"
+  },
+  {
+   "item": "user_and_password_enumeration",
+   "check": "api.user_enum"
+  },
+  {
+   "item": "mass_assignment",
+   "check": "api.mass_assignment"
+  },
+  {
+   "item": "unauthorized_password_change",
+   "check": "api.unauth_password_change"
+  },
+  {
+   "item": "sqli_injection",
+   "check": "api.sqli"
   }
  ],
  "dvga": [
@@ -115,6 +148,22 @@
   {
    "item": "batch_query_attack",
    "check": "gql.batching"
+  },
+  {
+   "item": "aliases_based_attack",
+   "check": "gql.aliases"
+  },
+  {
+   "item": "discovering_graphql",
+   "check": "gql.detect"
+  },
+  {
+   "item": "fingerprinting_graphql",
+   "check": "gql.fingerprint"
+  },
+  {
+   "item": "deep_recursion_query_attack",
+   "check": "gql.deep_recursion"
   }
  ],
  "insecurebankv2": [

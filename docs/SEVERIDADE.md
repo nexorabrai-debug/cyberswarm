@@ -21,12 +21,17 @@ Regras aplicadas pelo módulo `validation` (testadas em `tests/test_validation_c
 | `android.exported` | medium | Componente Android exportado sem permissão |
 | `api.bola` | high | Broken Object Level Authorization |
 | `api.excessive_data` | high | API retorna campos sensíveis (senha/hash/segredo) em resposta GET |
+| `api.jwt_password_hash` | high | JWT de sessão embute hash de senha |
 | `api.jwt_weak_key` | critical | JWT aceito com chave fraca/conhecida |
+| `api.mass_assignment` | high | Mass assignment eleva privilégio (admin) |
 | `api.no_security_schemes` | medium | Especificação da API sem esquemas de autenticação |
 | `api.ratelimit.doc` | low | Rate limit não documentado |
 | `api.ratelimit.live` | low | Resposta real sem cabeçalho de rate limit |
+| `api.sqli` | critical | Injeção SQL em parâmetro de API |
 | `api.unauth.public` | low | Endpoint de leitura sem autenticação |
 | `api.unauth.sensitive` | high | Endpoint sensível ou de escrita sem autenticação |
+| `api.unauth_password_change` | critical | Troca de senha de outro usuário (BOLA) |
+| `api.user_enum` | medium | Enumeração de usuário/senha via mensagens distintas |
 | `api.verbose_error.doc` | medium | Erro verboso documentado (stack trace) |
 | `api.verbose_error.live` | medium | Erro verboso em execução (stack trace na resposta) |
 | `apk.allowbackup` | medium | APK com android:allowBackup=true |
@@ -67,7 +72,11 @@ Regras aplicadas pelo módulo `validation` (testadas em `tests/test_validation_c
 | `ext.nuclei.info` | info | Achado do nuclei (template OSS) |
 | `ext.nuclei.low` | low | Achado do nuclei (template OSS) |
 | `ext.nuclei.medium` | medium | Achado do nuclei (template OSS) |
+| `gql.aliases` | medium | Aliases GraphQL sem limite |
 | `gql.batching` | medium | GraphQL array batching habilitado |
+| `gql.deep_recursion` | medium | Recursão GraphQL sem limite aparente |
+| `gql.detect` | info | Endpoint GraphQL descoberto |
+| `gql.fingerprint` | info | Fingerprint do motor GraphQL via erro |
 | `gql.graphiql` | low | Interface GraphiQL/IDE exposta |
 | `gql.introspection` | medium | Introspecção GraphQL habilitada |
 | `gql.stacktrace` | medium | GraphQL retorna stack trace em erros |
@@ -104,7 +113,9 @@ Regras aplicadas pelo módulo `validation` (testadas em `tests/test_validation_c
 | `tls.hsts` | medium | HSTS ausente em site HTTPS |
 | `tls.old_protocol` | high | Protocolo TLS obsoleto aceito (TLS 1.0/1.1) |
 | `tls.self_signed` | high | Certificado autoassinado |
+| `web.access_log` | high | Log de acesso exposto via HTTP |
 | `web.api_docs_exposed` | low | Documentação de API (Swagger/OpenAPI) pública |
+| `web.confidential_doc` | medium | Documento confidencial servido em /ftp |
 | `web.cookie.httponly` | medium | Cookie sem flag HttpOnly |
 | `web.cookie.samesite` | low | Cookie sem atributo SameSite |
 | `web.cookie.secure` | medium | Cookie sem flag Secure em HTTPS |
@@ -124,6 +135,7 @@ Regras aplicadas pelo módulo `validation` (testadas em `tests/test_validation_c
 | `web.methods.trace` | high | Método TRACE anunciado |
 | `web.metrics_exposed` | medium | Endpoint de métricas (Prometheus) exposto sem autenticação |
 | `web.no_https` | medium | Site acessível sem HTTPS |
+| `web.score_board` | info | Rota de score-board referenciada no front |
 | `web.server_version` | low | Versão do servidor exposta |
 
 Comando: `cyberswarm severity-table` imprime a tabela abaixo.

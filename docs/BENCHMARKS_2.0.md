@@ -37,3 +37,18 @@ Precisão estrita = achados mapeados / todos os achados. Falso positivo manual *
 
 ## Honestidade
 Não há cobertura “completa”. O ganho medido é **+4 itens oficiais** no total (JS+1, VAmPI+2, DVGA+1) com evidência confirmada.
+
+## Rodada 2 (2026-11-03 ~21:20 Brasília) — detecção segura, só 127.0.0.1, nuclei desligado
+
+Medido com `cyberswarm hacker validate --lab <lab> --mode 1.1 --no-nuclei`.
+
+| Lab | Antes (rodada 1) | Depois | Itens novos |
+|---|---|---|---|
+| VAmPI | 4/9 (44,4%) | **8/9 (88,9%)**, prec. estrita 30,2% | mass_assignment, sqli_injection, unauthorized_password_change, user_and_password_enumeration (+ rate_limiting mapeado) |
+| DVGA | 3/23 (13,0%) | **8/23 (34,8%)**, prec. estrita 50,0% | aliases, deep_recursion, discovering, fingerprinting, graphiql, field_suggestions, introspection |
+| Juice Shop | 3/116 (2,6%) | **5/116 (4,3%)**, prec. estrita 19,6% | exposedMetrics, passwordHashLeak, directoryListing, errorHandling |
+| WebGoat | 3/25 | não remedido (lab parado) | — |
+| InsecureBankv2 | 13/25 | sem mudança | — |
+
+Não reproduzidos: 0 em todos. Checks novos de log de acesso, documento em /ftp e score-board ainda não mapearam item oficial do Juice Shop nesta medição.
+Precisão estrita baixa = muitos achados confirmados que não estão na lista oficial (não são falsos positivos comprovados, só não-listados).
