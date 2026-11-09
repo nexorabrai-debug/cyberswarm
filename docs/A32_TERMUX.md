@@ -2,7 +2,7 @@
 
 Tudo roda **no seu próprio celular**. Não tem link que vence e não custa nada.
 
-> **Versão liberada:** tag `v2.0.0` = commit `a025b7184aeb9e0662f979006efb7ed0a31e73b0`.
+> **Versão liberada:** **2.1.0** (chat de comandos) = commit `a025b7184aeb9e0662f979006efb7ed0a31e73b0`.
 > **Status:** testado num Termux ARM64 **emulado** (oficial `termux/termux-docker:aarch64` rodando com qemu + proot num computador).
 > **Ainda NÃO testado num Galaxy A32 de verdade.** Veja "O que ainda depende do teste no celular".
 
