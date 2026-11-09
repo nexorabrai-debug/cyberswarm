@@ -1,10 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# CyberSwarm 2.0 no Termux (Android ARM64). Roda só no próprio celular (127.0.0.1).
+# CyberSwarm 2.1 no Termux (Android ARM64). Roda só no próprio celular (127.0.0.1).
 # Uso (versão FIXA): curl -fsSL https://raw.githubusercontent.com/nexorabrai-debug/cyberswarm/<SHA>/termux/instalar.sh | bash -s <SHA>
 # O código é baixado exatamente no commit <SHA> e conferido com `git rev-parse HEAD`.
 set -euo pipefail
 REPO="https://github.com/nexorabrai-debug/cyberswarm.git"
-TAG="v2.0.0"
+TAG="v2.1.0"
 WANT="${1:-${CS_SHA:-}}"
 DIR="$HOME/cyberswarm"; ENVF="$HOME/.cyberswarm_env"; DATA="$HOME/cyberswarm-data"
 PFX="${PREFIX:-/data/data/com.termux/files/usr}"
@@ -66,6 +66,6 @@ for m, what in [("ssl","TLS"),("sqlite3","banco"),("cryptography","TLS/chaves"),
     try: importlib.import_module(m); print(f"  ok   {m:13s} ({what})")
     except Exception as e: print(f"  FALTA {m:12s} ({what}): {e}")
 PY
-echo; echo "Pronto! CyberSwarm 2.0 ($GOT)"
+echo; echo "Pronto! CyberSwarm 2.1 ($GOT)"
 echo "Ligar:   bash ~/iniciar.sh     e abra no Chrome: http://127.0.0.1:8770"
 echo "Backup:  bash ~/cyberswarm-backup.sh    Restaurar: bash ~/cyberswarm-restore.sh ARQUIVO"

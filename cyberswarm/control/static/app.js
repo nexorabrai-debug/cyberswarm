@@ -55,7 +55,7 @@ V.chat = async () => {
   const threads = await api("/api/chat/threads"), cl = await api("/api/clients");
   let tid = location.hash.split("/")[2];
   if (!tid && threads[0]) tid = String(threads[0].id);
-  const head = `<h2>Chat Hacker AI</h2>
+  const head = `<h2>Chat de comandos</h2>
     <div class="row" style="margin-bottom:8px">${owner() ? `<select id="ncid"><option value="_lab">Laboratório</option>${cl.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}</select>
     <button id="nchat" class="sec">Nova conversa</button>` : ""}</div>
     <div class="row" style="margin-bottom:8px;overflow-x:auto">${threads.map(t => `<a class="btn ${String(t.id)===String(tid)?"":"sec"}" href="#/chat/${t.id}">#${t.id} ${esc(t.title||t.client_id)}</a>`).join("") || "<span class=mut>nenhuma conversa</span>"}</div>`;
@@ -64,8 +64,8 @@ V.chat = async () => {
     return; }
   const d = await api("/api/chat/threads/" + tid);
   app.innerHTML = head + `<div class="card"><div class="mut">cliente ${esc(d.thread.client_id)} · #${tid}</div>
-    <div class="chat-box" id="cbox">${d.messages.map(m => `<div class="${m.role==="user"?"chat-me":"chat-bot"}">${esc(m.content)}</div>`).join("") || "<span class=mut>diga um objetivo, ex.: verificar TLS e API do laboratório</span>"}</div>
-    ${owner() ? `<div class="chat-input"><textarea id="cmsg" rows="2" placeholder="Objetivo ou comando (status, pausar #ID…)"></textarea><button id="csend">Enviar</button></div>` : ""}</div>`;
+    <div class="chat-box" id="cbox">${d.messages.map(m => `<div class="${m.role==="user"?"chat-me":"chat-bot"}">${esc(m.content)}</div>`).join("") || "<span class=mut>dê uma ordem, ex.: verificar TLS do laboratório — eu peço «escopo autorizado» antes de rodar</span>"}</div>
+    ${owner() ? `<div class="chat-input"><textarea id="cmsg" rows="2" placeholder="Ordem (ex.: escanear portas do lab) ou status / pausar #ID…"></textarea><button id="csend">Enviar</button></div>` : ""}</div>`;
   const box = $("#cbox"); box.scrollTop = box.scrollHeight;
   if (owner()) {
     $("#nchat").onclick = async () => { const r = await api("/api/chat/threads", {method:"POST", body:{client_id:$("#ncid").value}}); location.hash = "#/chat/"+r.id; };

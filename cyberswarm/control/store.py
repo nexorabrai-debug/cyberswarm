@@ -28,6 +28,7 @@ MIG = [
     "ALTER TABLE sessions ADD COLUMN rotated REAL",
     """CREATE TABLE IF NOT EXISTS chat_threads(id INTEGER PRIMARY KEY, client_id TEXT NOT NULL, title TEXT, created_by TEXT, created REAL, updated REAL)""",
     """CREATE TABLE IF NOT EXISTS chat_messages(id INTEGER PRIMARY KEY, thread_id INT NOT NULL, role TEXT NOT NULL, content TEXT NOT NULL, meta TEXT, created REAL)""",
+    "ALTER TABLE chat_threads ADD COLUMN pending TEXT",
 ]
 
 SCRYPT = dict(n=2 ** 14, r=8, p=1, dklen=32)

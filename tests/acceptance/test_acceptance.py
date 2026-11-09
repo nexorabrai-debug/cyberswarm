@@ -44,9 +44,11 @@ def test_04_05_06_receive_plan_queue(srv):
     """Critérios 4–6: pedido → plano → fila."""
     _, b, _ = srv; c = C(b); c.login()
     tid = c("POST", "/api/chat/threads", {"client_id": "_lab"})[1]["id"]
-    r = c("POST", f"/api/chat/threads/{tid}/messages", {"content": "verificar cabeçalhos web e TLS do laboratório"})[1]
+    r0 = c("POST", f"/api/chat/threads/{tid}/messages", {"content": "verificar cabeçalhos web e TLS do laboratório"})[1]
+    assert r0["meta"]["intent"] == "confirm_scope" and r0["meta"].get("pending")
+    r = c("POST", f"/api/chat/threads/{tid}/messages", {"content": "escopo autorizado"})[1]
     assert r["meta"]["intent"] == "mission" and r["meta"].get("job")
-    assert "módulos" in r["reply"].lower() or "Plano" in r["reply"] or "Missão" in r["reply"]
+    assert "módulos" in r["reply"].lower() or "Plano" in r["reply"] or "Missão" in r["reply"] or "escopo" in r["reply"].lower()
     jid = r["meta"]["job"]
     st = c("GET", f"/api/jobs/{jid}")[1]["job"]["status"]
     assert st in ("na_fila", "executando", "concluida", "aguardando_aprovacao")

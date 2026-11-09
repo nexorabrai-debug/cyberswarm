@@ -127,6 +127,15 @@ class Worker:
                 s.x("UPDATE jobs SET approval_token=? WHERE id=?", (tok, a["job_id"]))
             self.enqueue(a["job_id"])
         return st
+    def _chat_result(self, jid):
+        """Empilha resumo no chat se a tarefa nasceu de uma conversa."""
+        try:
+            from .chat import ChatService
+            # reusa store/worker/audit já ligados ao app quando existir; senão instancia leve
+            ChatService(self.store, self, self.audit).post_job_result(jid)
+        except Exception:
+            self.audit.log("chat_result_failed", job=jid)
+
     def lab_targets(self):
         with self.lab_lock:
             if not self._lab:
@@ -205,6 +214,7 @@ class Worker:
                 (time.time(), json.dumps(summ, default=str, ensure_ascii=False), "concluída", jid))
             if stop_check(): self.audit.log("job_stopped_at_end", job=jid); return
             self.audit.log("job_done", job=jid)
+            self._chat_result(jid)
         except Stopped as e:
             if str(e) == "cancelada": s.x("UPDATE jobs SET status='cancelada', finished=COALESCE(finished,?) WHERE id=?", (time.time(), jid))
             else: s.x("UPDATE jobs SET status='pausada', progress=? WHERE id=? AND COALESCE(cancelled,0)=0", ("pausada no checkpoint", jid))
@@ -212,3 +222,4 @@ class Worker:
         except Exception as e:
             s.x("UPDATE jobs SET status='erro', finished=?, error=?, progress=? WHERE id=?", (time.time(), repr(e)[:500], "erro", jid))
             self.audit.log("job_error", job=jid, error=repr(e)[:200]); traceback.print_exc()
+            self._chat_result(jid)

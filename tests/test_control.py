@@ -200,7 +200,9 @@ def test_restart_gives_up_after_max_attempts(tmp_path, monkeypatch):
 def test_chat_mission_lab(srv):
     _, b, _ = srv; c = C(b); c.login()
     tid = c("POST", "/api/chat/threads", {"client_id": "_lab", "title": "t"})[1]["id"]
-    r = c("POST", f"/api/chat/threads/{tid}/messages", {"content": "verificar cabeçalhos TLS do laboratório"})[1]
+    r0 = c("POST", f"/api/chat/threads/{tid}/messages", {"content": "verificar cabeçalhos TLS do laboratório"})[1]
+    assert r0["meta"]["intent"] == "confirm_scope" and r0["meta"].get("pending")
+    r = c("POST", f"/api/chat/threads/{tid}/messages", {"content": "escopo autorizado"})[1]
     assert r["meta"]["intent"] == "mission" and r["meta"].get("job")
     msgs = c("GET", f"/api/chat/threads/{tid}")[1]["messages"]
     assert any(m["role"] == "assistant" for m in msgs)

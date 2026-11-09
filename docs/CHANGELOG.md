@@ -1,5 +1,19 @@
 # Changelog — CyberSwarm
 
+## [2.1.0] — 2026-11-09 (America/Sao_Paulo)
+
+### Adicionado
+- **Chat de comandos** no Control: você escreve a ordem em português e o painel mapeia para uma allow-list (web, TLS, API, rede lab, APK, código, auditoria…).
+- Confirmação obrigatória «escopo autorizado» antes de enfileirar qualquer missão.
+- Resumo da tarefa volta para o chat ao concluir (ou em erro).
+- Recusa explícita de senha de Wi-Fi, shell livre, roubo de credencial e alvo fora do escopo.
+- Testes em `tests/test_chat_commands.py` (+ ajustes de aceitação/control).
+
+### Alterado
+- Título do chat na PWA: «Chat de comandos».
+- `control/chat.py` reescrito em cima de `control/commands.py`.
+- Coluna `pending` em `chat_threads` para guardar a confirmação de escopo.
+
 ## 2026-11-03 (sem cartão)
 
 - Pesquisa free tiers sem cartão; top: Serv00, Render Free.
