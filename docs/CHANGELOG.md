@@ -1,5 +1,19 @@
 # Changelog — CyberSwarm
 
+## [2.1.1] — 2026-11-09 (America/Sao_Paulo)
+
+### Corrigido
+- Saudações («Oi», «olá») e pedidos vagos («Quero um teste», «D») **não** criam missão nem pending.
+- «Meu Wi-Fi» / qualquer menção a Wi-Fi explica o limite do aparelho (só 127.0.0.1 / hosts autorizados) — sem fingir crack.
+- Código Python colado é recusado (sem shell/execução).
+- Confirmação «escopo autorizado» fica ligada ao fingerprint do pedido (alvo+ação); saudação/vago descarta pending antigo.
+- Label honesta: com provedor «none» = assistente de comandos (regras fixas, sem LLM).
+- Removido fallback perigoso `test*` → `full_audit` da 2.1.0.
+
+### Útil
+- Prévia clara ação/alvo antes de enfileirar.
+- Resumo no chat com achados reais (evidência + correção da tabela), sem inventar gravidade.
+
 ## [2.1.0] — 2026-11-09 (America/Sao_Paulo)
 
 ### Adicionado

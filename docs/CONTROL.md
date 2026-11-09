@@ -1,6 +1,8 @@
 # CyberSwarm Control 1.0 — painel PWA (pt-BR)
 
 Painel web instalável no celular para acompanhar e aprovar auditorias do CyberSwarm/Hacker AI.
+**2.1.1:** saudações/pedidos vagos não criam missão; confirmação amarra alvo+ação; Wi-Fi explica limite do aparelho; provedor none = assistente de comandos (sem LLM).
+
 **Não tem terminal nem endpoint de comando livre**: o chat mapeia ordens em português para uma **allow-list** de ações defensivas, exige confirmação «escopo autorizado», e só então cria *missões* (objetivo + cliente + escopo já registrado) que o
 worker executa reaproveitando o núcleo (planner, Orchestrator, ApprovalGate, Audit, relatórios). Teste:
 `test_no_command_endpoint`.

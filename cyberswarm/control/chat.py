@@ -1,6 +1,7 @@
 """Chat de comandos do CyberSwarm Control.
-Ordem em português → allow-list → confirmação de escopo → fila de jobs → resultado no chat.
-Sem shell livre, sem roubo de credencial, sem alvo fora do escopo autorizado."""
+Ordem em português → allow-list → prévia alvo/ação → confirmação ligada ao pedido → fila → resultado.
+Sem shell livre, sem roubo de credencial, sem alvo fora do escopo autorizado.
+Com provedor «none»: assistente de comandos determinístico (não é LLM conversacional)."""
 import json, time
 from urllib.parse import urlparse
 from ..providers import get_provider, plan_with_provider, Provider
@@ -20,6 +21,15 @@ class ChatService:
 
     def deterministic(self):
         return bool(self.store.get("deterministic", False))
+
+    def provider_label(self):
+        cfg = self.cfg()
+        if self.deterministic() or (cfg.get("mode") or "none") == "none":
+            return "assistente de comandos (regras fixas, sem LLM)"
+        p = get_provider(cfg, deterministic=False)
+        if p.name == "none":
+            return "assistente de comandos (regras fixas, sem LLM)"
+        return f"provedor {p.name}"
 
     def threads(self, user, client_id=None):
         rows = self.store.q("SELECT * FROM chat_threads ORDER BY updated DESC LIMIT 100")
@@ -72,8 +82,14 @@ class ChatService:
             (json.dumps(data, ensure_ascii=False) if data else None, time.time(), tid),
         )
 
+    def _clear_stale_pending(self, tid, reason=None):
+        if self._pending_get(tid):
+            self._pending_set(tid, None)
+            return reason or "Pedido pendente anterior foi descartado (não vale para esta mensagem)."
+        return None
+
     def post_job_result(self, jid):
-        """Chamado pelo worker ao concluir/errar: empilha resumo no chat da missão."""
+        """Chamado pelo worker ao concluir/errar: empilha resumo útil no chat (sem inventar achados)."""
         j = self.store.q("SELECT * FROM jobs WHERE id=?", (jid,), one=True)
         if not j or not j.get("chat_id"):
             return
@@ -85,17 +101,34 @@ class ChatService:
         except Exception:
             summ = {}
         if status == "concluida":
-            findings = summ.get("findings") or summ.get("confirmed")
-            n = findings if isinstance(findings, int) else (len(findings) if isinstance(findings, list) else summ.get("confirmed", "?"))
+            lines = [f"Resultado da tarefa #{jid}: concluída."]
             mods = summ.get("modules") or []
+            if mods:
+                lines.append(f"Módulos: {', '.join(mods) if isinstance(mods, list) else mods}")
             elapsed = summ.get("elapsed_s")
-            reply = (
-                f"Resultado da tarefa #{jid}: concluída.\n"
-                f"Módulos: {', '.join(mods) if isinstance(mods, list) else mods}\n"
-                f"Achados/confirmados: {n}"
-                + (f" · {elapsed}s" if elapsed is not None else "")
-                + "\nVeja Tarefas/Achados para o relatório completo. Nada inventado — só o que a fila registrou."
-            )
+            if elapsed is not None:
+                lines.append(f"Tempo: {elapsed}s")
+            # Tenta listar achados reais do banco do job (sem fabricar)
+            findings = self._job_findings_brief(j)
+            if findings:
+                lines.append(f"Achados observados ({len(findings)}):")
+                for f in findings[:8]:
+                    sev = f.get("severity") or "?"
+                    title = f.get("title") or f.get("check_id") or "?"
+                    ev = (f.get("evidence") or "")[:160]
+                    rec = (f.get("recommendation") or "")[:120]
+                    lines.append(f"• [{sev}] {title}")
+                    if ev:
+                        lines.append(f"  evidência: {ev}")
+                    if rec:
+                        lines.append(f"  correção: {rec}")
+                if len(findings) > 8:
+                    lines.append(f"… e mais {len(findings) - 8}. Abra Achados/Relatório para o restante.")
+            else:
+                n = summ.get("findings") or summ.get("confirmed") or 0
+                lines.append(f"Resumo numérico: achados={n}. Abra Achados para detalhes.")
+            lines.append("Nada inventado — só o que a fila e os módulos registraram.")
+            reply = "\n".join(lines)
         elif status == "erro":
             reply = f"Tarefa #{jid} falhou: {(j.get('error') or 'erro')[:400]}"
         else:
@@ -104,6 +137,34 @@ class ChatService:
         self._add(tid, "assistant", reply, meta)
         self.audit.log("chat_job_result", thread=tid, job=jid, status=status)
 
+    def _job_findings_brief(self, j):
+        """Lê achados reais do cyberswarm.db do job — nunca inventa."""
+        out = []
+        try:
+            import os, sqlite3
+            from .worker import job_dir
+            data = getattr(self.worker, "data", None)
+            if not data:
+                return out
+            dbp = os.path.join(job_dir(data, j["client_id"], j["id"]), "cyberswarm.db")
+            if not os.path.isfile(dbp):
+                return out
+            con = sqlite3.connect(dbp)
+            con.row_factory = sqlite3.Row
+            # schema pode variar levemente entre versões
+            cols = {r[1] for r in con.execute("PRAGMA table_info(findings)").fetchall()}
+            want = [c for c in ("check_id", "title", "severity", "evidence", "recommendation") if c in cols]
+            if not want:
+                con.close()
+                return out
+            rows = con.execute(
+                f"SELECT {', '.join(want)} FROM findings ORDER BY id LIMIT 12"
+            ).fetchall()
+            con.close()
+            return [dict(r) for r in rows]
+        except Exception:
+            return out
+
     def handle(self, user, tid, text):
         msgs, th = self.messages(user, tid)
         text = (text or "").strip()[:2000]
@@ -111,18 +172,29 @@ class ChatService:
             raise ValueError("mensagem vazia")
         self._add(tid, "user", text)
 
-        # 1) confirmação / aborto de pedido pendente
         pending = self._pending_get(tid)
         ctrl = CMD.detect_control_intent(text)
+
+        # 1) abort / confirm — confirm SÓ do pending atual (fingerprint)
         if pending and ctrl == "abort_pending":
             self._pending_set(tid, None)
             reply, meta = "Pedido cancelado. Nada foi executado.", {"intent": "abort_pending"}
             self._add(tid, "assistant", reply, meta)
             self.audit.log("chat_message", thread=tid, by=user["username"], intent="abort_pending", client=th["client_id"])
             return {"reply": reply, "meta": meta}
+
         if pending and ctrl == "confirm":
-            reply, meta = self._launch(user, th, pending, confirmed=True)
-            self._pending_set(tid, None)
+            # Confirmação só vale se o fingerprint ainda bate (alvo+ação deste pedido)
+            fp = pending.get("fp") or CMD.pending_fingerprint(pending)
+            if fp != CMD.pending_fingerprint(pending):
+                self._pending_set(tid, None)
+                reply, meta = (
+                    "O pedido pendente estava inconsistente e foi descartado. Mande o comando de novo.",
+                    {"intent": "confirm", "stale": True},
+                )
+            else:
+                reply, meta = self._launch(user, th, pending, confirmed=True, expected_fp=fp)
+                self._pending_set(tid, None)
             self._add(tid, "assistant", reply, meta)
             self.audit.log("chat_message", thread=tid, by=user["username"], intent=meta.get("intent"), client=th["client_id"])
             return {"reply": reply, "meta": meta}
@@ -130,21 +202,51 @@ class ChatService:
         # 2) parser allow-list
         parsed = CMD.parse_command(text, th["client_id"], LAB)
 
-        if parsed["action"] == "refuse":
-            reply, meta = parsed["error"], {"intent": parsed.get("intent") or "refuse"}
-        elif parsed["action"] == "none":
-            reply, meta = parsed["error"], {"intent": "unknown"}
-        elif parsed["action"] == "control":
-            reply, meta = self._control(user, th, text, parsed["intent"])
-        else:  # propose
-            # valida escopo contra cadastro do cliente antes de propor
-            ok, err = self._validate_scope(th, parsed)
-            if not ok:
-                reply, meta = err, {"intent": "out_of_scope"}
-            elif parsed.get("inline_confirm"):
-                reply, meta = self._launch(user, th, parsed, confirmed=True)
+        # Saudações / vague / refuse: descartam pending antigo (não autorizam lançamento depois)
+        if parsed["action"] in ("greet", "clarify", "refuse", "none"):
+            cleared = self._clear_stale_pending(tid)
+            if parsed["action"] == "greet":
+                reply = parsed.get("reply") or CMD.GREET_MSG
+                if cleared:
+                    reply += "\n\n(Descartei um pedido pendente anterior — ele não vale mais.)"
+                meta = {"intent": "greet", "cleared_pending": bool(cleared)}
+            elif parsed["action"] == "clarify":
+                reply = parsed.get("reply") or CMD.CLARIFY_MSG
+                if cleared:
+                    reply = "(Pedido pendente anterior descartado.)\n\n" + reply
+                meta = {"intent": parsed.get("intent") or "vague", "cleared_pending": bool(cleared)}
+            elif parsed["action"] == "refuse":
+                reply = parsed["error"]
+                meta = {"intent": parsed.get("intent") or "refuse", "cleared_pending": bool(cleared)}
             else:
-                reply, meta = self._propose(tid, parsed)
+                reply = parsed.get("error") or CMD.CLARIFY_MSG
+                meta = {"intent": "unknown", "cleared_pending": bool(cleared)}
+            self._add(tid, "assistant", reply, meta)
+            self.audit.log("chat_message", thread=tid, by=user["username"], intent=meta.get("intent"), client=th["client_id"])
+            return {"reply": reply, "meta": meta}
+
+        if parsed["action"] == "control":
+            # status/help etc. não lançam; pending permanece só se for status/help/explain
+            if parsed["intent"] in ("help", "status", "explain", "approve_hint", "pause", "cancel"):
+                reply, meta = self._control(user, th, text, parsed["intent"])
+            else:
+                reply, meta = self._control(user, th, text, parsed["intent"])
+            self._add(tid, "assistant", reply, meta)
+            self.audit.log("chat_message", thread=tid, by=user["username"], intent=meta.get("intent"), client=th["client_id"])
+            return {"reply": reply, "meta": meta}
+
+        # propose: nova prévia substitui qualquer pending antigo (escopo velho NÃO autoriza ação nova)
+        ok, err = self._validate_scope(th, parsed)
+        if not ok:
+            self._clear_stale_pending(tid)
+            reply, meta = err, {"intent": "out_of_scope"}
+        elif parsed.get("inline_confirm"):
+            # inline: monta pending, lança na hora com o mesmo fp
+            pending_body = self._pending_body(parsed)
+            reply, meta = self._launch(user, th, pending_body, confirmed=True, expected_fp=pending_body["fp"])
+            self._pending_set(tid, None)
+        else:
+            reply, meta = self._propose(tid, parsed)
 
         self._add(tid, "assistant", reply, meta)
         self.audit.log(
@@ -156,11 +258,25 @@ class ChatService:
         )
         return {"reply": reply, "meta": meta}
 
+    def _pending_body(self, parsed):
+        pending = {
+            "kind": parsed["kind"],
+            "goal": parsed["goal"],
+            "commands": list(parsed.get("commands") or []),
+            "modules": list(parsed.get("modules") or []),
+            "lab": bool(parsed.get("lab")),
+            "lab_name": parsed.get("lab_name"),
+            "target_url": parsed.get("target_url"),
+            "target_label": parsed.get("target_label"),
+            "scope_hosts": list(parsed.get("scope_hosts") or []),
+            "created": time.time(),
+        }
+        pending["fp"] = CMD.pending_fingerprint(pending)
+        return pending
+
     def _validate_scope(self, th, parsed):
-        """Garante que o alvo está no escopo autorizado do thread/cliente."""
         cid = th["client_id"]
         if parsed.get("kind") == "extval" or parsed.get("lab") or cid == LAB:
-            # lab: só 127.0.0.1/localhost
             for h in parsed.get("scope_hosts") or []:
                 if h not in ("127.0.0.1", "localhost"):
                     return False, f"Host {h} fora do laboratório."
@@ -183,38 +299,39 @@ class ChatService:
         return True, None
 
     def _propose(self, tid, parsed):
-        pending = {
-            "kind": parsed["kind"],
-            "goal": parsed["goal"],
-            "commands": parsed.get("commands") or [],
-            "modules": parsed.get("modules") or [],
-            "lab": bool(parsed.get("lab")),
-            "lab_name": parsed.get("lab_name"),
-            "target_url": parsed.get("target_url"),
-            "target_label": parsed.get("target_label"),
-            "scope_hosts": parsed.get("scope_hosts") or [],
-        }
+        pending = self._pending_body(parsed)
         self._pending_set(tid, pending)
         cmds = ", ".join(pending["commands"]) or "missão"
+        desc = []
+        for n in pending["commands"]:
+            spec = CMD.ALLOWLIST.get(n) or {}
+            if spec.get("desc"):
+                desc.append(spec["desc"])
+        action_txt = "; ".join(desc) or cmds
         hosts = ", ".join(pending["scope_hosts"]) or "(lab)"
         reply = (
-            f"Entendi o comando: {cmds}.\n"
-            f"Ação: {parsed.get('kind')} · alvo: {pending['target_label']}\n"
-            f"Escopo autorizado proposto (hosts): {hosts}\n"
-            f"Objetivo: {pending['goal'][:300]}\n\n"
-            "Para eu executar, responda exatamente com «escopo autorizado» (ou «confirmo»).\n"
-            "Para desistir: «desistir». Sem confirmação eu não rodo nada."
+            f"Prévia (ainda NÃO rodei nada):\n"
+            f"• Ação: {action_txt}\n"
+            f"• Alvo: {pending['target_label']}\n"
+            f"• Hosts do escopo: {hosts}\n"
+            f"• Objetivo interno: {pending['goal'][:240]}\n"
+            f"• Modo: {self.provider_label()}\n"
+            f"• Id do pedido: {pending['fp']}\n\n"
+            "Para executar ESTE pedido, responda «escopo autorizado» (ou «confirmo»).\n"
+            "Para desistir: «desistir». Um «oi» ou pedido vago descarta esta prévia."
         )
         meta = {
             "intent": "confirm_scope",
             "pending": True,
+            "fp": pending["fp"],
             "commands": pending["commands"],
             "scope_hosts": pending["scope_hosts"],
             "target": pending["target_label"],
+            "action": action_txt,
         }
         return reply, meta
 
-    def _launch(self, user, th, pending, confirmed=False):
+    def _launch(self, user, th, pending, confirmed=False, expected_fp=None):
         if user["role"] != "owner":
             return "Perfil somente leitura: peça a um owner para criar missões.", {
                 "intent": "mission",
@@ -225,7 +342,15 @@ class ChatService:
                 "intent": "confirm_scope",
                 "need_confirm": True,
             }
-        # revalida escopo na hora de lançar
+        fp_now = CMD.pending_fingerprint(pending)
+        if expected_fp and expected_fp != fp_now:
+            return "Confirmação não corresponde ao pedido pendente. Mande o comando de novo.", {
+                "intent": "confirm",
+                "stale": True,
+            }
+        if not pending.get("commands") and pending.get("kind") != "extval":
+            return "Pedido sem ação definida — nada enfileirado.", {"intent": "confirm", "empty": True}
+
         ok, err = self._validate_scope(th, pending)
         if not ok:
             return err, {"intent": "out_of_scope"}
@@ -243,9 +368,10 @@ class ChatService:
                     user, "extval", LAB, goal, None, lab_name or "juice-shop", chat_id=th["id"]
                 )
                 return (
-                    f"Escopo confirmado. Validação externa #{jid} enfileirada no laboratório {lab_name or 'juice-shop'}.\n"
-                    "Acompanhe com «status» — o resultado volta neste chat.",
-                    {"intent": "mission", "job": jid, "lab": lab_name, "confirmed_scope": True},
+                    f"Confirmado (pedido {fp_now}). Validação externa #{jid} enfileirada "
+                    f"({lab_name or 'juice-shop'}).\nModo: {self.provider_label()}. "
+                    "Acompanhe com «status».",
+                    {"intent": "mission", "job": jid, "lab": lab_name, "confirmed_scope": True, "fp": fp_now},
                 )
 
             lab = cid == LAB or pending.get("lab")
@@ -270,7 +396,8 @@ class ChatService:
                 )
             else:
                 P, prov = plan_with_provider(goal, targets, False, cfg, det)
-            explanation = Provider().explain(P) if det else prov.explain(P)
+            # Explicação sempre pela regra (honesta); não finge LLM
+            explanation = Provider().explain(P)
             active = [t for t in P["tasks"] if t.get("active") and t.get("target") and not is_lab(t["target"])]
             note = (
                 f"\n⚠️ {len(active)} tarefa(s) ativa(s) vão pedir sua aprovação antes de rodar."
@@ -281,17 +408,20 @@ class ChatService:
                 user, "hacker", cid, goal, url if not lab else None, None, plan=P, chat_id=th["id"]
             )
             scope_txt = ", ".join(pending.get("scope_hosts") or []) or ("lab" if lab else url)
+            label = self.provider_label()
             return (
-                f"Escopo autorizado confirmado ({scope_txt}). Missão #{jid} criada (provedor: {prov.name}).\n"
-                f"{explanation}{note}\n"
-                "Acompanhe com «status». Quando terminar, o resumo aparece aqui.",
+                f"Confirmado (pedido {fp_now}, escopo {scope_txt}). Tarefa #{jid} enfileirada.\n"
+                f"Modo: {label}.\n{explanation}{note}\n"
+                "Acompanhe com «status». Quando terminar, o resumo com evidências aparece aqui.",
                 {
                     "intent": "mission",
                     "job": jid,
-                    "provider": prov.name,
+                    "provider": "none" if (prov.name == "none" or det) else prov.name,
+                    "provider_label": label,
                     "plan": {"modules": P["modules"], "skipped": P["skipped"]},
                     "confirmed_scope": True,
                     "commands": pending.get("commands") or [],
+                    "fp": fp_now,
                 },
             )
         except Exception as e:
@@ -299,24 +429,24 @@ class ChatService:
 
     def _control(self, user, th, text, intent):
         if intent == "help":
-            return HELP, {"intent": intent}
+            return HELP + f"\n\nModo atual: {self.provider_label()}.", {"intent": intent}
         if intent == "status":
             jobs = [
                 j
                 for j in self.store.q(
-                    "SELECT id,status,goal,client_id,progress FROM jobs ORDER BY id DESC LIMIT 12"
+                    "SELECT id,status,goal,client_id,progress,created,finished FROM jobs ORDER BY id DESC LIMIT 12"
                 )
                 if self._vis(user, j["client_id"])
             ]
-            reply = "Fila recente:\n" + (
-                "\n".join(
-                    f"#{j['id']} [{j['status']}] {j['goal'][:80]}"
-                    + (f" · {j['progress']}" if j.get("progress") else "")
-                    for j in jobs
-                )
-                or "nenhuma tarefa"
-            )
-            return reply, {"intent": intent, "jobs": [j["id"] for j in jobs]}
+            if not jobs:
+                reply = "Fila: nenhuma tarefa registrada neste painel."
+            else:
+                lines = ["Fila recente (dados reais do banco):"]
+                for j in jobs:
+                    prog = f" · {j['progress']}" if j.get("progress") else ""
+                    lines.append(f"#{j['id']} [{j['status']}] {(j.get('goal') or '')[:80]}{prog}")
+                reply = "\n".join(lines)
+            return reply, {"intent": intent, "jobs": [j["id"] for j in jobs], "count": len(jobs)}
         if intent in ("pause", "cancel"):
             jid = CMD.extract_job_id(text)
             if not jid:
@@ -355,17 +485,22 @@ class ChatService:
                 return "Tarefa não encontrada", {"intent": intent}
             summ = json.loads(j["summary"] or "{}")
             plan = json.loads(j["plan_json"] or "{}") or {"modules": summ.get("modules", [])}
-            prov = get_provider(self.cfg(), deterministic=self.deterministic())
-            reply = prov.explain(
+            reply = Provider().explain(
                 plan
                 if plan.get("modules")
                 else {"modules": summ.get("modules", []), "tasks": [], "skipped": summ.get("skipped", [])},
                 summ,
             )
-            return reply, {"intent": intent, "job": jid, "provider": prov.name}
+            brief = self._job_findings_brief(j)
+            if brief:
+                reply += "\n\nAchados (amostra real):\n" + "\n".join(
+                    f"• [{f.get('severity')}] {f.get('title')}: {(f.get('evidence') or '')[:120]}" for f in brief[:5]
+                )
+            return reply, {"intent": intent, "job": jid, "provider": "none"}
         if intent == "confirm":
             return (
-                "Não há pedido pendente neste chat. Mande um comando (ex.: «verificar TLS do laboratório») e depois confirme o escopo.",
+                "Não há pedido pendente neste chat. Mande um comando claro "
+                "(ex.: «verificar cabeçalhos do laboratório») e depois confirme.",
                 {"intent": "confirm", "no_pending": True},
             )
         if intent == "abort_pending":

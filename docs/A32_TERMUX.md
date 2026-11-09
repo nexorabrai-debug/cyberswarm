@@ -2,7 +2,7 @@
 
 Tudo roda **no seu próprio celular**. Não tem link que vence e não custa nada.
 
-> **Versão liberada:** **2.1.0** (chat de comandos) = commit `a025b7184aeb9e0662f979006efb7ed0a31e73b0`.
+> **Versão liberada:** **2.1.1** (chat seguro + evidência web). Use o comando pinado da mensagem de liberação (SHA completo).
 > **Status:** testado num Termux ARM64 **emulado** (oficial `termux/termux-docker:aarch64` rodando com qemu + proot num computador).
 > **Ainda NÃO testado num Galaxy A32 de verdade.** Veja "O que ainda depende do teste no celular".
 
@@ -12,7 +12,7 @@ Tudo roda **no seu próprio celular**. Não tem link que vence e não custa nada
    https://github.com/termux/termux-app/releases → baixe `termux-app_..._github-debug_arm64-v8a.apk` e instale.
 2. Abra o Termux, cole **este comando (uma linha só)** e aperte Enter:
    ```
-   curl -fsSL https://raw.githubusercontent.com/nexorabrai-debug/cyberswarm/a025b7184aeb9e0662f979006efb7ed0a31e73b0/termux/instalar.sh | bash -s a025b7184aeb9e0662f979006efb7ed0a31e73b0
+   curl -fsSL https://raw.githubusercontent.com/nexorabrai-debug/cyberswarm/SHA/termux/instalar.sh | bash -s SHA   # troque SHA pelo commit da liberação 2.1.1
    ```
    Se perguntar algo (Y/n), aperte Enter. Demora (no emulador levou ~8 min; no celular deve ser menos, depende da internet).
 3. Quando pedir a **senha do usuário `dono`**, digite uma com 10+ caracteres ou aperte Enter para gerar uma. Se gerar, **anote**: aparece só uma vez. Fica guardada só no celular, em `~/.cyberswarm_env`.
@@ -23,8 +23,8 @@ Tudo roda **no seu próprio celular**. Não tem link que vence e não custa nada
 Para desligar: **Ctrl + C** no Termux. Para atualizar no futuro: rode o comando novo que eu mandar (senha e dados são mantidos).
 
 ## Como a versão fica fixa (sem baixar código variável da main)
-- O comando baixa o `instalar.sh` **do commit exato** (`.../cyberswarm/a025b7184aeb9e0662f979006efb7ed0a31e73b0/termux/instalar.sh`), não da `main`.
-- O mesmo SHA é passado ao instalador (`bash -s a025b7184aeb9e0662f979006efb7ed0a31e73b0`). Ele faz `git fetch` **desse commit** e confere `git rev-parse HEAD`. Se for diferente, **para** com erro.
+- O comando baixa o `instalar.sh` **do commit exato** (`.../cyberswarm/9ccfaa9935717eed23553db48737ee8e2ede8de6/termux/instalar.sh`), não da `main`.
+- O mesmo SHA é passado ao instalador (`bash -s 9ccfaa9935717eed23553db48737ee8e2ede8de6`). Ele faz `git fetch` **desse commit** e confere `git rev-parse HEAD`. Se for diferente, **para** com erro.
 - Por que o SHA não está dentro do instalador: um arquivo não consegue conter o SHA do próprio commit. Por isso o SHA vai no comando, e a documentação (este arquivo) foi escrita num commit **posterior**, que muda só documentos. O código liberado é exatamente o da tag `v2.0.0`.
 - Sem SHA no comando, o instalador usa a tag `v2.0.0` e mostra o commit.
 - Pacotes do Termux (`pkg`) e o `fpdf2` (pip, versão `>=2.7,<3`) vêm dos repositórios oficiais e não são fixos por versão.

@@ -64,8 +64,8 @@ V.chat = async () => {
     return; }
   const d = await api("/api/chat/threads/" + tid);
   app.innerHTML = head + `<div class="card"><div class="mut">cliente ${esc(d.thread.client_id)} · #${tid}</div>
-    <div class="chat-box" id="cbox">${d.messages.map(m => `<div class="${m.role==="user"?"chat-me":"chat-bot"}">${esc(m.content)}</div>`).join("") || "<span class=mut>dê uma ordem, ex.: verificar TLS do laboratório — eu peço «escopo autorizado» antes de rodar</span>"}</div>
-    ${owner() ? `<div class="chat-input"><textarea id="cmsg" rows="2" placeholder="Ordem (ex.: escanear portas do lab) ou status / pausar #ID…"></textarea><button id="csend">Enviar</button></div>` : ""}</div>`;
+    <div class="chat-box" id="cbox">${d.messages.map(m => `<div class="${m.role==="user"?"chat-me":"chat-bot"}">${esc(m.content)}</div>`).join("") || "<span class=mut>assistente de comandos (não é LLM). Ex.: verificar cabeçalhos do laboratório — confirmo com «escopo autorizado»</span>"}</div>
+    ${owner() ? `<div class="chat-input"><textarea id="cmsg" rows="2" placeholder="Ordem clara (ex.: verificar cabeçalhos do lab) · status · ajuda"></textarea><button id="csend">Enviar</button></div>` : ""}</div>`;
   const box = $("#cbox"); box.scrollTop = box.scrollHeight;
   if (owner()) {
     $("#nchat").onclick = async () => { const r = await api("/api/chat/threads", {method:"POST", body:{client_id:$("#ncid").value}}); location.hash = "#/chat/"+r.id; };

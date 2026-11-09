@@ -1,10 +1,11 @@
-# CyberSwarm 2.1 (com chat de comandos)
+# CyberSwarm 2.1.1 (com chat de comandos)
 
 Ferramenta de **auditoria de segurança defensiva** com vários agentes trabalhando ao mesmo tempo. Gera relatório em PDF e HTML, separa o que está **confirmado** do que é **suspeita** e compara análises para ver o que foi corrigido.
 
 ⚠️ **Só use em sistemas seus ou com autorização por escrito do dono.** Testar sistemas dos outros sem permissão é crime no Brasil (Lei 12.737/2012). O programa **bloqueia** qualquer alvo fora do laboratório que não esteja cadastrado em `clients.json` com uma autorização válida.
 
 ## O que tem na versão 2.1
+- **Chat de comandos (2.1.1):** saudações/vagos não viram missão; confirmação por pedido; label sem LLM.
 - **Chat de comandos:** ordem em português → allow-list → confirmação «escopo autorizado» → fila; recusa Wi-Fi/shell/fora do escopo.
 - **Control (painel no celular, PWA):** login com senha, chat que cria tarefas de verdade, botões **pausar, cancelar e retomar**, lista de achados e relatórios. Pode ser "instalado" na tela inicial pelo Chrome.
 - **Fila persistente com checkpoints:** se o servidor cair, a tarefa continua de onde parou ao ligar de novo.
@@ -14,7 +15,7 @@ Ferramenta de **auditoria de segurança defensiva** com vários agentes trabalha
 
 ## Como usar no Android (Galaxy A32) — modo Termux
 É o modo recomendado agora: grátis, sem cartão, sem link que vence. Roda **só no próprio celular** (`http://127.0.0.1:8770`).
-Versão liberada: **2.1.0** (chat de comandos), commit `a025b7184aeb9e0662f979006efb7ed0a31e73b0`.
+Versão liberada: **2.1.1** (chat seguro). Comando pinado Termux na mensagem de liberação desta atualização.
 Passo a passo, comando de instalação com versão fixa, backup/restauração, consumo e relatório de testes: **`docs/A32_TERMUX.md`**.
 
 > **Ainda não foi testado num Galaxy A32 de verdade.** Foi testado num Termux ARM64 emulado (veja o relatório em `docs/A32_TERMUX.md`). O que depende do teste no celular está listado lá.

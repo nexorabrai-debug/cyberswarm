@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cyberswarm"
-version = "2.1.0"
+version = "2.1.1"
 description = "Auditoria de segurança DEFENSIVA multiagente (escopo controlado, só alvos autorizados)"
 readme = "README.md"
 requires-python = ">=3.10"
